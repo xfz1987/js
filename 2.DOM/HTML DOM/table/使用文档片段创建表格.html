@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" type="text/html" charset="utf-8"/>
+		<title>使用文档片段创建表格</title>
+		<style>
+			table{border-collapse:collapse;width:400px;margin:0 auto;}
+			table th,table td
+			{
+				border:1px solid black;
+				height:35px;
+				text-align:center;
+			}
+		</style>
+	
+	</head>
+
+
+	<body>
+		<script>
+			var data = [
+				{"ename":"Tom", "salary":3500, "age":25},
+				{"ename":"John", "salary":3800, "age":28},
+				{"ename":"Marry", "salary":3600, "age":25}
+			];
+
+			/*
+			  文档片段(碎片):在内存中专门临时保存一个子树结构的容器
+			  优点:避免闪存，提高子树结构的加载速度
+			  使用:1.创建一个文档片段
+			         var frag = document.createDocumentFragment();
+				   2.将元素先添加到片段中，在片段中组合
+				     frag.appendChild(子元素);
+				   3.将文档片段做为整体，挂载到页面中
+				     parentNode.appendChild(frag);
+			  何时使用:挂载复杂结构的子树时
+			  
+			*/
+			//1.创建文档片段
+			var frag = document.createDocumentFragment();
+			var table = document.createElement("table");
+			
+			//2.将元素先添加到片段中，在片段中组合
+			frag.appendChild(table);
+			var tr = document.createElement("tr");
+			table.appendChild(tr);
+			for(var key in data[0]){
+				var th = document.createElement("th");
+				th.innerHTML = key;
+				tr.appendChild(th);
+			}
+			for (var i=0,len=data.length;i<len;i++){
+				var tr = document.createElement("tr");
+				table.appendChild(tr);
+				for(var key in data[i]){
+					var td = document.createElement("td");
+					td.innerHTML = data[i][key];
+					tr.appendChild(td);
+				}
+			}
+
+			//3.将文档片段做为整体，挂载到页面中
+			document.body.appendChild(frag);
+		</script>
+	</body>
+</html>

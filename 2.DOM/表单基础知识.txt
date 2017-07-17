@@ -1,0 +1,307 @@
+1.类型:HTMLFormElement
+  属性/方法:
+       acceptCharset:字符集（HTML中的accept-charset）
+              action:接受请求的URL （HTML中的action）
+            elements:表单中所有控件的集合  form.elements[index/"name值"]
+             enctype:请求的编码类型（HTML中的action）
+	      length:表单中控件的数量
+	      method:get/post（HTML中的method）
+	        name:（HTML中的name）
+	      target:发送请求和接收相应的窗口名称（HTML中的target）
+	     reset():表单重置
+	    submit():提交
+
+   获得表单的方式:
+   ①var form = document.getElementById("myForm");//通过ID
+   ②var firstForm = document.forms[0];//通过集合的索引
+   ③var someForm = document.forms["form_a"];//通过name属性值
+
+   注意:③方式不推荐
+
+
+2.提交表单
+  ①提交按钮模式
+    a.通用提交按钮
+      <input type="submit" value="提交"/>
+    b.自定义提交按钮
+      <button type="submit">提交</button>
+    c.图像按钮
+      <input type="image" src="1.png"/>
+
+    按钮提交的模式:在提交表单时，浏览器会在将请求发送给服务器之前触发submit事件
+                    这样，我们就有机会验证表单数据。
+
+    取消事件的默认行为:
+    EventUtil.addHandler(form,"sumbit",function(event){
+	event = EventUtil.getEvent(event);
+	//阻止默认模式
+	EventUtil.preventDefault(event);
+    });
+	    
+  ②无按钮模式 
+    var form = document.getElementById(id);
+    form.submit();
+    //这种没有按钮的形式,提交表单时，不会触发submit事件，记得在调用此方法之前要先验证表单数据
+
+    ******************************************************************************************
+    *设计:解决重复提交的问题
+    *     1.在第一次提交表单后就禁用提交按钮  
+    *     2.利用onsubmit事件处理程序取消后续的表单提交操作
+    ******************************************************************************************
+
+    		<form>
+			姓名:<input type="text" id="text"/>
+			<button type="submit" onclick="cancelSubmit()">提交</button>
+		</form>
+		<script>
+			function cancelSubmit(){
+				var textValue = document.forms[0].elements[0].value;
+				alert(textValue);
+				document.forms[0].elements[1].disabled = true;
+			}
+		</script>
+		注意:不能用onclick事件处理程序来实现，因为不同浏览器存在"时差"，
+		     先出法click事件的浏览器:在提交之前就禁用了按钮，这样表单就永远无法提交了；
+		     
+		<!--优化:只适用表单中有提交按钮-->		
+		var form = document.forms[0];	
+		EventUtil.addHandler(form,"submit",function(event){
+			event = EventUtil.getEvent(event);
+			var target = EventUtil.getTarget(event);
+			//取得提交按钮
+			var btn = target.elements["aaa"];
+			//禁用
+			btn.disabled = true;
+		});	
+
+3.重置表单
+    ①重置按钮模式
+    a.通用重置按钮
+      <input type="reset" value="重置"/>
+    b.自定义重置按钮
+      <button type="reset">重置</button>
+
+    按钮重置的模式:在重置表单时，会触发reset事件，利用这个机会，在必要时取消重置操作。
+
+    取消事件的默认行为:
+    EventUtil.addHandler(form,"reset",function(event){
+	event = EventUtil.getEvent(event);
+	//阻止表单重置
+	EventUtil.preventDefault(event);
+    });
+	    
+  ②无按钮模式 
+    var form = document.getElementById(id);
+    form.reset();
+    //这种没有按钮的形式,重置表单时，不会触发reset事件
+
+  *********************************************************************************************
+  *设计:不要重置表单，提供一个取消按钮，让用户能够回到前一个页面，而不是重置表单中的所有值*
+  *********************************************************************************************
+
+4.表单字段
+  //已经找到的form
+  //第一个控件
+  var field1 = form.elements[0];
+  //name为"abc"的控件
+  var field2 = form.elements["abc"];
+  //取得表单中控件的数量
+  var fieldCount = form.elements.length;
+
+  ①控件的共有属性                                 不同的属性                 
+    a.disabled				            a.单选列表 :  select-one     
+    b.form:指向当前字段所属表单的指针	            b.多项列表 :  select-multiple
+    c.name
+    d:readOnly
+    e.tabIndex:当前字段的切换(tab)序号
+    f.type
+    g.value
+
+    ②控件的共有方法 
+    a.focus:激活表单字段，可以影响键盘事件                           EventUtil.addHandler(window,"load",function(event){   
+      例如:页面加载完毕，将焦点转移到表单的第一个字段			    document.form[0].elements[0].focus();        
+      做法:侦听load事件，并在该事件发生时，			      });                                                
+      在表单的第一个字段调用focus()方法
+      
+      HTML5:autofocus属性
+            只要设置了这个属性，不用js就能自动将焦点转移到相应字段
+	    <input type="text" autofocus/>
+
+     b.blur:失去焦点
+     
+     c.change:
+        input/textarea元素:从获得焦点到失去焦点并且value值改变时，触发change事件
+	        select元素:选择了不同的选项，就会触发change事件
+
+ 
+ 5.文本框脚本（input、textarea）
+   input：
+            size:可以显示的字符数
+           value:初始值
+       maxlength:可输入的最大字符数
+
+   textarea:
+          rows:行
+	  cols:列
+          <textarea>初始值</textarea>
+	  不能控制输入的最大字符数
+
+   
+   选择文本（用于全部删除）:target.select();
+   //(获得焦点就选择文本，用于全部删除)
+   EventUtil.addHandler(document.forms[0].elements[0],"focus",function(event){
+       event = EventUtil.getEvent(event);
+       var target = EventUtil.getTarget(event);
+       target.select();
+   });
+
+
+   过滤输入:
+   ①屏蔽所有的按键
+   EventUtil.addHandler(document.forms[0].elements[0],"keypress",function(event){
+       event = EventUtil.getEvent(event);
+       EventUtil.preventDefault(event);      
+   });
+   
+   ②让某输入框只能输入数字(不能同时按ctrl)
+   EventUtil.addHandler(document.forms[0].elements[0],"keypress",function(event){
+       event = EventUtil.getEvent(event);
+       var charCode = EventUtil.getCharCode(event);
+       if(!/\d/.test(String.fromCharCode(charCode)) && charCode > 9 && !event.ctrlKey){
+	    EventUtil.preventDefault(event);
+       }		
+   });
+
+
+   操作剪贴板:
+   beforecopy:在发生复制操作前触发
+         copy:在发生复制操作时触发
+    beforecut:在发生剪切操作前触发
+          cut:在发生剪切操作时触发
+  beforepaste:在发生粘贴操作前触发
+	paste:在发生粘贴操作时触发
+
+   访问剪贴板的数据，用clipboardDate对象
+   clipboardDate: getDate(要取得的数据的格式) IE:text、URL  其它:MIME 
+                  setDate(数据格式, 要放在剪贴板上的文本, )
+
+
+   var EventUtil = {
+	//获得剪贴板的内容
+	getClipboardText : function(event){
+		var clipboardData = (event.clipboardData || window.clipboardData);
+		return clipboardData.getData("text");
+	},
+	//向剪贴板放置内容
+	setClipboardText : function(event,value){
+		if(event.clipboardData){
+			return event.clipboardData.setData("text/plain",value);
+		}else if(window.clipboardData){
+			return window.clipboardData.setData("text",value);
+		}else{
+			throw new Error("该浏览器不支持设置剪贴板功能!");
+		}
+	}
+   };
+
+  EventUtil.addHandler(document.forms[0].elements[0],"paste",function(event){
+	event = EventUtil.getEvent(event);
+	var text = EventUtil.getClipboardText(event);
+	if(!/^\d*$/.test(text)){
+		alert("不能粘贴非数字的字符！");
+		EventUtil.preventDefault(event);
+	}
+  });
+
+  
+  自动切换节点:
+    常用方式:用户填写完当前字段后时，自动将焦点切换到下一个字段
+        要求:在切换自动焦点之前，必须知道用户已经输入了既定长度的数据
+
+  
+  [HTML5]:约束验证API
+     <input type="text/textarea/select" required/>//required 不能为空
+     <input type="email"/>
+     <input type="url">
+
+
+6.选择框脚本
+  var o = new Option(text,value);//创建一个option，比标准DOM方便多了
+  add(newOption):在末尾追加一个option对象
+  add(newOption,relOption):向控件中relOption前插入新元素，
+  //简写
+  select.add(new Option(text,value));
+
+  options:控件中的所有选项集合
+  remove(index):移除指定位置的选项
+  selectedIndex:从0开始，没有则为-1
+  size:选择框可见的行数
+  multiple：true/false
+
+  options[index].text
+  options[index].value
+
+
+  //获得多选
+  function getSelectedOptions(selectbox){
+	for(var i=0,result=new Array(),option = null,len=selectbox.options.length;i<len;i++){
+		option = selectbox.options[i];
+		if(option.selected){
+			result.push(option);
+		}
+	}
+	return result;
+  }
+   
+
+
+7.表单序列化
+  ①浏览器将数据发送给服务器的过程
+    a.对表单字段的名称和值进行URL编码，使用 & 分割
+    b.不发送禁用的表单字段
+    c.只发送勾选的复选框和单选按钮
+    d.不发送type为"reset"和"button"的按钮
+    e.多选择框中的每个选中的值单独一个条目
+    f.在点击提交按钮时，也会发送提交按钮，否则不发送提交按钮，也包括type为"image"的<input>元素
+    g.<select>元素的值,就是选中的<option>元素的value值,如果元素中没有value特性，则是<option>元素的文本值
+
+    function serialize(form){
+	for(var i=0,parts=[],,len=form.elements.length,field=null,optLen,option,optValue;i++){
+		field = form[i];
+		switch(field,type){
+			case "select-one":
+			case "select-multiple":
+				if(field.name.length){
+					for(j=0,optLen=field.options.length;j<optLen;j++){
+						option = field.options[j];
+						if(option.selected){
+							optValue="";
+							if(option.hasAttribute){
+								optionValue=(option.hasAttribute("value"))?option.value:option.text);
+							}else{//IE浏览器
+								optionValue=(option.attributes["value"].sepecified?option.value:option.text);
+							}
+							parts.push(encodeURIComponent(field.name) + "=" + encodeURIComponent(optValue));
+						}
+					}
+				}
+		}
+		break;
+		case underfined:
+		case "file":
+		case "submit":
+		case "button":
+			break;
+		case "radio":
+		case "checkbox":
+			if(field.checked){
+				break;
+			}
+		default:
+			if(field.name.length){
+				parts.push(encodeURIComponent(field.name) + "=" + encodeURIComponent(filed.value))
+			}
+
+	}
+	return parts.join("");
+    }

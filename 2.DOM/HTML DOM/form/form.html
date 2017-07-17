@@ -1,0 +1,71 @@
+﻿<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>示例3</title>
+		<style>
+			.hintText{color: #aaaaaa;font-style: italic; }
+			textarea{resize:none;width:500px;height:100px}
+			.valiFail{background-color:Pink};
+		</style>
+	</head>
+	<body>
+		<h2>发表留言</h2>
+		<form name="msgForm"> 
+			姓名：<input name="userName" class="hintText" value="请输入您的姓名" onfocus="clearText(this)" onblur="rever(this)"/>姓名必须6位字符以内<br/>
+			内容：<textarea name="userContent" class="hintText" onfocus="clearText(this)" onblur="rever(this)">请输入留言内容</textarea>留言内容不能为空<br/>
+			<label><input type="checkbox" onclick="read(this)"/>我已阅读了《常见问题列表》</label><br/>
+			<input type="submit" disabled="disabled" value="提交" onclick="viliAll(event)"/>
+		</form>
+		
+		<script>
+			var form = document.forms["msgForm"];
+			function read(chb){
+				var submit = form.elements[form.elements.length-1];
+				submit.disabled = !chb.checked;
+			}
+			function clearText(textObj){	
+				if(/^\s*$/.test(textObj.value) || textObj.value == "请输入您的姓名" || textObj.value == "请输入留言内容"){
+					textObj.value = "";
+					textObj.className = "";
+				}
+			}
+			function rever(textObj){
+				if(/^\s*$/.test(textObj.value)){
+					textObj.className = "hintText";
+					if(textObj.nodeName == "INPUT"){
+						textObj.value = "请输入您的姓名";
+					}else{
+						textObj.value = "请输入留言内容";
+					}
+				}else{
+					textObj.className = "";
+				}
+			}
+			function viliAll(event){
+				var txtName = form.userName;
+				var txtContent = form.userContent;
+				var result = true;
+				if(txtName.value == "请输入您的姓名" || !/^\w{6}$/.test(txtName.value)){
+					txtName.focus();
+					txtName.className = "valiFail";
+					result = false;
+				}else{ 
+					if(txtContent.value == "请输入留言内容"){
+						txtContent.focus();
+						txtContent.className = "valiFail";
+						result = false;
+					}
+				}
+
+				if(!result){
+					if(event.preventDefault){
+						event.preventDefault();
+					}else{
+						event.returnValue = false;
+					}
+				}
+			}
+		</script>
+	</body>
+</html>

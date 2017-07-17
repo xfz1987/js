@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" type="text/html" charset="utf-8"/>
+		<title>创建table</title>
+		<style>
+			table{border-collapse:collapse;width:400px;margin:0 auto;}
+			table th,table td
+			{
+				border:1px solid black;
+				height:35px;
+				text-align:center;
+			}
+		</style>
+	
+	</head>
+
+
+	<body>
+			
+		<script>
+			var data = [
+				{"ename":"Tom", "salary":3500, "age":25},
+				{"ename":"John", "salary":3800, "age":28},
+				{"ename":"Marry", "salary":3600, "age":25}
+			];
+
+			//1.创建空表格
+			var table = document.createElement("table");
+			document.body.appendChild(table);
+			//2.创建一个tr(用于表头)
+			var tr = document.createElement("tr");
+			table.appendChild(tr);
+			for(var key in data[0]){
+				var th = document.createElement("th");
+				th.innerHTML = key;
+				tr.appendChild(th);
+			}
+			//3创建tr和td用于
+			for (var i=0,len=data.length;i<len;i++){
+				var tr = document.createElement("tr");
+				table.appendChild(tr);
+				for(var key in data[i]){
+					var td = document.createElement("td");
+					td.innerHTML = data[i][key];
+					tr.appendChild(td);
+				}
+			}
+		</script>
+	</body>
+</html>

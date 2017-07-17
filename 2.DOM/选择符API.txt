@@ -1,0 +1,22 @@
+1.querySelector()
+  接受一个CSS选择器，返回与该模式匹配的第一个元素，如果没有找到则返回null
+  
+  例:
+     //获得body元素
+     var body = document.querySelector("body");
+     //取得ID为"myDiv"的元素
+     var myDiv = document.querySelector("#myDiv");
+     //取得class为"selected"的元素
+     var selected = document.querySelector(".selected");
+     //取得class为"button"的第一个图像元素
+     var img = document.body.querySelector("img.button");
+
+
+2.querySelectorAll("选择符")
+  接受一个CSS选择器，返回与该模式匹配的所有元素的NodeList，如果没有找到则返回null
+
+
+3.matchesSelector("选择符")
+  如果调用元素与该选择符匹配，则返回true，否则，返回false
+
+

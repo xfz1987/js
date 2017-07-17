@@ -1,0 +1,21 @@
+1.创建Table对象
+  ①创建: var table = document.createElement("table");
+           table.border = "1";
+	   table.width = "100%";
+  ②创建行: var newRow = table.insertRow(table.rows[i]);在i-1与i行之间创建一行
+             var newRow = table.insertRow(table.rows.length);//在表格最后追加一个新行（()safari和360有问题）
+             table.rows:封装了table下的所有tr对象
+	     table.rows[i]:获取表格中的第 i+1 行，i从0开始
+	     
+  ③删除行:table.deleteRow(newRow.rowIndex);
+            newRow.rowIndex:一个行对象在表格中的索引
+
+  ④向行中增加单元格: var newCell = newRow.insertCell(newRow.cells.length);//在行内最后追加一个新单元格（()safari和360有问题）
+			var newCell = newRow.insertCell(newRow.cells[i])://在i-1与i格之间创建一行
+			newRow.cells:保存这一行中所有的单元格
+  ⑤在航中删除单元格: newRow.deleteCell(newCell.cellIndex);
+                      
+	
+2.表单对象
+  ①获取form对象: document.forms[index/"name值"]
+  ②获取控件对象(带name属性和提交按钮):form.elements[index/"name值"]或form.name属性值

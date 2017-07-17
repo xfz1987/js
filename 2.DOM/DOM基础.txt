@@ -1,0 +1,345 @@
+HTML XML XHTML DHTML
+HTML：描述超文本内容的标记语言
+XML：持久化存数格式化数据的标记语言
+XHTML：严格的HTML和XML格式标准！
+DHTML：实现网页动态效果的所有技术的统称(HTML  css  javascript)。
+
+Window对象：js程序的全局对象，代表当前窗口对象
+history对象：当前窗口，本次打开后的浏览历史记录
+history控制：前进，后退，刷新
+navigator对象：当前浏览器软件的版本和配置信息
+document对象：当前正在浏览的页面文件！
+location对象：当前窗口正在浏览的地址
+修改location的属性，可以实现打开新网页，仅能替换当前页
+screen对象：当前环境的显示器和分辨率
+    检测当前浏览器的分辨率
+event：代表网页中触发的事件对象。
+
+document对象：网页一加载，首先创建document对象
+document对象整个网页文档树的根节点
+
+DOM节点树：DOM模型，将网页中的每个元素，属性，内容都当做节点，组成一棵树形结构。
+节点之间的关系：父子，兄弟
+
+文档节点：document
+元素节点：一对儿HTML标签及其之间包含的子内容
+文本节点：HTML中纯文本内容
+属性节点：html开始标签中的每个属性都是一个节点
+
+
+************************************************************************************************    
+
+一.document
+1.nodeName 和 nodeValue 属性
+
+  //适用于所有浏览器
+  if(someNode.nodeType ==1){//先检测一下节点的类型，看他是不是一个元素
+     value = someNode.nodeName;
+  }
+
+  nodeName：一般是找到的标签名。
+            如果碰到文本节点，nodeName返回#text
+            *nodeName永远返回全大写字母的标签名*
+            做判断时，都要先转换大小写，再比较！
+  nodeValue:null
+
+  innerHTML：开始标签和结束标签之间包含的HTML文本
+  *innerHTML：清空父元素下的所有子内容！--最快！
+  *parent.innerHTML="";
+  *使用DOM对网页内容的一切修改，都只在内存中临时进行,网页源文件不变！刷新后页面效果恢复！
+
+  textContent：获得开始标签和结束标签之间的文本，自动清除内容中的html标签，变为纯文本内容！
+  何时使用：1. 确实要获得不带标签的文本内容时
+             2. 清除当前内容中的样式！
+
+   IE8 不支持textContent：先判断是否支持，再调用
+   if(elmObj.textContent){//说明支持
+        可用
+   }else{
+   	替换成innerText
+   }
+
+在html元素的事件中使用this：指代当前触发事件的元素对象
+
+2.操作节点
+  //创建新节点
+  var newNode = document.createElement("select");
+  newNode.id = "d1";
+  newNode.classNode = "ss";
+  newNodw.innerHTML = "XXX";
+  
+  或者
+  var div = document.createElement("<div id=\"d1\" class=\"ss\"></div>")
+  这种方法能避开IE7及更早版本的问题
+  if(client.browser.ie && client.browser.ie <= 7){}
+
+  //将新节点添加到某节点的最后一个子节点的后面位置
+  someNode.appendChild(newNode);
+  //删除节点(删除的节点仍为文档所有，只不过没有它的位置了)
+  someNode.removeChild(someNode.lastChild);//移除最后一个子节点
+  someNode.removeChild(someNode.firstChild);
+  //将新节点插入到任意位置
+  someNode.insertBefore(newNode,someNode.lastChild);//在最后一个子节点前插入一个节点
+  someNode.insertBefore(newNode,null);//成为最后一个子节点
+  //替换子节点
+  someNode.replaceChild(newNode,someNode.lastChild);//替换最后一个子节点
+  //获得某节点的子节点
+  someNode.childNodes[someNode.childNodes.length - n];//索引也是从0开始
+
+  //节点克隆(深复制和浅复制)
+    var newNode = someNode.cloneNode(true/false);
+    深复制:true- 复制节点及其整个子节点树
+    浅复制:false-只复制该节点(newNode.childNodes.length = 0)
+
+    复制后的节点属于文档所有，因为没有为它指定父节点，所以没有它的位置，
+    可以用appendChild()、insertBefore、replaceChild() 将他们添加到结构中
+
+    注意:克隆方法不能复制js属性，例如事件处理程序等。
+
+3.查找元素
+  ①document.getElementById(id);
+    如果找不到，返回null！尽量先验证，再使用查找结果。
+
+  ②document.getElementsByTagName(name标签名);
+  例如:var images = document.getElementByTagName("img");
+       images.length;
+       images[0].src;//第一个图像元素的src
+       images.item[0].src//第一个图像元素的src
+       
+       如果其中有一个img:<img src="" name="myimage"/>
+       var myImage = images.namedItem("myimage");
+  ③document.getElementsByName(name属性)
+    常用于单选按钮
+    <fieldset>
+	<legend>请选择你喜欢的颜色</legend>
+	<ul>
+	    <li>
+		<input type="radio" name="color" id="color_red"/>
+		<label for="color_red">红色</label>
+	    </li>
+	    <li>
+		<input type="radio" name="color" id="color_blue"/>
+		<label for="color_blue">蓝色</label>
+	    </li>
+	    <li>
+		<input type="radio" name="color" id="color_yellow"/>
+		<label for="color_yellow">黄色</label>
+	    </li>
+	</ul>
+    </fieldset>
+
+    var radios = getElementsByName("color");
+
+④获取/设置元素对象的属性：elemObj.属性名
+
+⑤按类名查找元素：IE8不支持
+  document/parentNode.getElementsByClassName("类名")
+
+⑥
+按选择器查找元素：IE8支持！
+按照选择器查找符合条件的元素：
+var firstElem=document.querySelector("CSS选择器");
+var elems=document.querySelectorAll("CSS选择器");
+原生API：底层实现！
+
+vs 旧getxxxByXXX方法
+旧getxxxByXXX方法：返回仅是实际元素对象的引用。还须返回树结构中遍历对象的属性。
+selectors API：返回结果包含完整的元素对象和属性。不需要再返回树中遍历，即可访问元素的所有属性！
+
+DEMO：二级菜单弹出
+onmouseover: 鼠标进入元素边界时，*发生一次*！
+onmouseout: 鼠标移出元素边界时，触发一次
+
+DOM树的快速获得指定节点：
+document.documentElement: 整个<html>的内容——了解
+document.body：直接获得body元素！——重要
+
+*爬树：
+向上爬：parentNode：
+向下爬：querySelectorAll:*
+
+元素树：节点树去掉属性节点和文本节点后得到的只有元素组成的树。
+            节点树       vs  元素树：
+父节点       parentNode       parentElementNode
+所有子节点   childNodes       children
+第一个子节点 firstChild       firstElementChild
+最后子节点   lastChild        lastElementChild
+前一个兄弟   previousSibling  previousElementSibling
+后一个兄弟   nextSibling      nextElementSibling
+
+4.特殊集合(都属于HTMLCollection)
+  document.anchors:包含文档中所有带name属性的<a>元素
+  document.links  :包含文档中所有带href苏醒的<a>元素
+  document.applets:包含文档中所有的<applet>元素,不推荐使用
+  document.forms  :包含文档中所有的<form>元素，与document.getElementSByTagName("form")效果一样
+  document.images :包含文档中所有的<img>元素，与document.getElementsByTagName("img")效果一样
+
+5.DOM一致性检测
+  由于浏览器对DOM的使用存在一些差异，如果要使用DOM的某些特殊功能是，
+  最好除了要检测hasFeature()之外，还要能力检测
+  //例如要获得浏览器DOM对xml的支持
+  var hasXmlDom = document.implementation.hasFeature("XML","1.1");
+  如果浏览器支持则返回true，否则返回false
+
+6.文档写入
+   write()和writeIn();都接受一个字符串，即要写入到输出流中的文本,
+   writeIn()则会在字符串末尾添加一个换行符(\n).
+
+
+  
+二、Element
+  常用于表现XML或HTML元素(nodeType = 1)
+  someNode.tagName = someNode.nodeName;
+
+  注意:例如在HTML中，代码中标签写的是div，通过someNode.tagName返回的是"DIV"以大写表示，
+       而在XML(有时XHTML)中，标签名则始终与源代码中的保持一致,
+       如果不确定代码会在HTML还是XML中执行，则要转换大小写形式
+       if(element.tagName.toLowerCase() == "div"){}
+  
+  1.html元素
+    <div id="myDiv" class="d1" title="Bob text" lang="en" dir="ltr"></div>
+    var div = document.getElementById("myDiv");
+    ①
+    div.className = "d1";
+    div.title = "Bob text";
+    div.lang = "en";//元素内容的语言代码，很少使用
+    div.dir = "ltr";//语言的方向 ltr:left to right; rtl:right to left;很少使用
+    
+    ②属性(getAttribute()、setAttribute、removeAttribute())
+    注意:div.className 和 div.getAttribute("class")
+    
+    获得属性:(如果不存在则返回null)
+    div.getAttribute("id");//"myDiv"
+    div.getAttribute("class");//"d1"
+    div.getAttribute("title");//"Bob text"
+    
+    div.attributes["d1"].value;//d1
+    div.getAttribute("di");//d1
+    div.attributes[1].value;//d1
+    div.getAttributeNode("d1").value//d1
+
+    设置属性:
+    div.setAttribute("dir","rtl");
+    div.setAttribute("dir").value = "rtl";
+    elementNode.setAttributeNode("dir");
+
+    移除属性：elemObj.removeAttribute("属性名")
+    判断属性是否存在：if(elemObj.属性名){} 
+    如果存在，返回true。如果不存在返回undefined-->false
+
+    element.removeAttribute("size");
+    element.removeAttributeNode(element.attributes[0]);
+
+
+    ③attributes属性
+    var id = element.attributes.getNamedItem("id").nodeValue;//返回的是一个集合
+    var id = element.attributes["id"].nodeValue;
+    
+    //删除
+    var oldAttr = element.attributes.removeNamedItem("id");
+    //添加
+    element.attributes.setNamedItem(newAttr);
+
+    ④核心DOM：操作一切结构化文档的统一API
+               问题：1. 繁琐 2. 对浏览器端兼容性不好
+               HTML DOM: 对HTML文档中所有HTML标签，属性的封装和简化
+               *elemObj.属性名:获取和设置标准属性的值*
+              特殊属性：class：在程序中，通常有特殊意义
+              *js中html的class属性，要换为className!*
+
+
+2.Text类型(nodeType = 3)
+  //创建
+  var textNode = document.createTextNode("hello");
+  element.appendChild(textNode);
+  var anotherTextNode = document.createTextNode("world");
+  element.appendChild(anotherTextNode);
+  如果两个文本节点是相邻的同胞节点，那么这两个节点中的文本就会连起来显示，中间没有空格
+
+  element.childNodes.length;//2
+
+  ①将两个文本合并(将相邻文本节点合并)
+  element.normalize();
+  element.childNodes.length;//1
+  element.firstChild.nodeValue;//helloworld;
+
+  ②分割文本节点(用①的例子helloworld)
+  var newNode = element.firstChild.splitText(5);
+  element.firstChild.nodeValue;//hello;
+  newNode.nodeValue;//world
+  element.childNodes.length;//2
+
+3.Attr类型
+  var attr = document.createAttribute("align");
+  attr.value = "center";
+  element.setAttribute(attr);
+  //获得Attribute（三种方式）
+  element.attributes["align"].value;
+  element.getAttribute("align");
+  element.getAttributeNode("align").value;
+  element.attributes["align"].nodeValue;
+  element.attributes[1].value);
+  
+
+-------------------------------------------总结-------------------------------------------------------------------------------
+DOM：增删改查
+
+查：6种：
+Selectors API: 
+var aElem=
+document/parentNode.querySelector("选择器");
+var elems=
+document/parentNode.querySelectorAll("选择器");
+
+var aElem=document.getElementById("id值");
+var elems=
+document/parentNode.getElementsByTagName("标签名");
+
+专门查询表单中的数据采集元素:
+var elems=document.getElementsByName("name值");
+
+HTML5:
+var elems=
+document.getElementsByClassName("class值");
+
+获取或设置元素的属性：
+HTML DOM： 元素对象.属性名
+   html中的class属性，在js中要换位className
+移除属性：元素对象.属性名="";
+
+核心DOM：var value=元素对象.getAttribute("属性名")
+元素对象.setAttribute("属性名","属性值")
+移除属性：元素对象.removeAttribute("属性名");
+
+增加新元素3步：
+1. 创建空元素对象：
+var newElem=document.createElement("标签名");
+2. 设置空元素对象的必要属性
+3. 将新元素，添加在父元素对象下：
+   追加：parentNode.appendChild(newElem);
+插入：parentNode.insertBefore(newElem,后一个现有元素)
+
+文档片段：内存中专门临时保存一个子树结构的容器
+好处：避免闪屏，提高子树结构的加载效率
+如何使用文档片段？3步：
+1. 先创建一个文档片段：var frag=documnet.createDocumentFragment();
+2. 将元素先添加到片段中，在片段中组合
+frag.appendChild(子元素);
+3. 将文档片段作为整体，挂载到页面中
+parentNode.appendChild(frag);
+何时使用：今后只要挂在复杂结构的子树时，都要先创建frag，再在frag中拼接子树。最后，将整个frag挂在到父元素下。
+
+删除节点：
+[var removedObj=]
+parentNode.removeChild(要删除的元素对象)
+或
+子元素对象.parentNode.removeChild(子元素对象)
+
+替换节点：将原位置对象移除，再在原位置追加新对象
+parentNode.replaceChild(newNode,oldNode)
+
+级联下拉列表：
+select元素：onchange: 选中项发生改变时触发
+      selObj.selectedIndex: 当前选中项的下标
+何时用this: 触发事件的对象，就是取值的对象时
+  
