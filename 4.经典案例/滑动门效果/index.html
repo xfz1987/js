@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>滑动门效果</title>
+		<style type="text/css">
+			*{margin:0;padding:0;}
+			#container{height:350px;margin:20px auto;border:1px solid #ccc;border-left:none;overflow:hidden;position:relative;}
+			#container img{position:absolute;display:block;left:0;border-left:1px solid #ccc;}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<img src="images/1.jpg" alt="神器1" title="神器1"/>
+			<img src="images/1.jpg" alt="神器1" title="神器1"/>
+			<img src="images/1.jpg" alt="神器1" title="神器1"/>
+			<img src="images/1.jpg" alt="神器1" title="神器1"/>
+		</div>
+		<script>
+			window.onload = function(){
+				//容器对象
+				var box = document.getElementById('container');
+				//获得图片对象集合
+				var imgs = document.getElementsByTagName('img');
+				//单张图片的宽度
+				var imgWidth = imgs[0].offsetWidth;
+				//设置掩藏门体露出的宽度
+				var exposeWidth = 200;
+				//设置容器对象的宽度(单张图片的宽度 + 生于图片的个数 * 掩藏门体露出的宽度)
+				var boxWidth = imgWidth + (imgs.length - 1) * exposeWidth;
+				box.style.width = boxWidth + 'px';
+				//设置每道门的初始位置(第1道门是展开的，不用设置)
+				function setImgsPos(){
+					for(var i=1,len=imgs.length;i<len;i++){
+						imgs[i].style.left = imgWidth + (i-1) * exposeWidth + 'px';
+					}
+				}
+				setImgsPos();
+
+				//计算每道门打开时应移动的距离
+				var translate = imgWidth - exposeWidth;
+
+				//为每道门绑定事件
+				for(var i=0,len=imgs.length;i<len;i++){
+					//使用立即调用的函数表达式，为了获取不同的i值
+					(function(i){
+						imgs[i].onmouseover = function(){
+							//先将每道门复位
+							setImgsPos();
+							//打开门
+							for(var j=1;j<=i;j++){
+								imgs[j].style.left = parseInt(imgs[j].style.left) - translate + 'px';
+							}
+						}
+					})(i);
+				}
+			}
+		</script>
+	</body>
+</html>

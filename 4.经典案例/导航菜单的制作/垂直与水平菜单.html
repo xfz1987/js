@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>垂直导航菜单</title>
+    <style>
+        *{padding:0;margin:0;font-size:14px;}
+        ul{list-style:none;}
+        ul li a{text-decoration:none;display:block;width:100px;height:30px;line-height:30px;background:#ccc;margin-bottom:1px;  }
+        ul li a:hover{background:#f60;color:#fff;}
+        ul.ter{width:100px;}
+        ul.ter li a{ /*用text-indent代替padding:，解决增加宽度的问题*/ text-indent:10px;}
+        ul.hor{text-align:center;}
+        ul.hor li{float:left;}
+        ul.hor li a{text-align:center;margin-right:1px;
+            transition:transform 50ms linear;
+            -moz-transition:transform 50ms linear;
+            -webkit-transition:transform 50ms linear;
+            -o-transition:transform 50ms linear;
+        }
+        /*改变高度*/
+        ul.hor li a:hover{
+            height:40px;line-height:40px;/*处理bug*/margin-top:-10px;
+            /*动画*/
+            transform:scale(1.2,1);
+            -ms-transform:scale(1.2,1);
+            -webkit-transform:scale(1.2,1);
+            -o-transform:scale(1.2,1);
+            -moz-transform:scale(1.2,1);
+        }
+
+    </style>
+</head>
+<body>
+    <input type="radio" name="deriction" value="ter" checked/> 垂直
+    <input type="radio" name="deriction" value="hor" /> 水平
+<br/><br/>
+<ul class="ter">
+    <li><a href="#">首页</a></li>
+    <li><a href="#">新闻快讯</a></li>
+    <li><a href="#">产品展示</a></li>
+    <li><a href="#">售后服务</a></li>
+    <li><a href="#">联系我们</a></li>
+</ul>
+<script>
+    var doc = document;
+    var radios = doc.querySelectorAll('[name="deriction"]');
+    for(var i= 0,len=radios.length;i<len;i++){
+        addHandle(radios[i],'change',handler);
+    }
+   function addHandle(element,type,handler){
+       if(element.addEventListener){
+           element.addEventListener(type,handler,false);
+       }else if(element.attachEvent){
+           element.attachEvent("on"+type,handler);
+       }else{
+           element["on"+type] = handler;
+       }
+   }
+    function handler(e){
+        var tar = e.target || e.srcElement;
+        var val = tar.value;
+        doc.querySelector('ul').setAttribute('class',val);
+    }
+
+    /*水平伸缩效果*/
+//    var a = doc.querySelectorAll('ul a');
+//    for(var j= 0,len= a.length;j<len;j++){
+//        addHandle(a[j],'mouseover',exp);
+//        addHandle(a[j],'mouseout',contract)
+//    }
+    function exp(){
+        var This = this;
+        clearInterval(This.timer);
+        This.timer = setInterval(function(){
+            This.style.width = This.offsetWidth + 8 + 'px';
+            if(This.offsetWidth >=160){
+                clearInterval(This.timer);
+                This.timer = null;
+            }
+        },30);
+    }
+    function contract(){
+        var This = this;
+        clearInterval(This.timer);
+        This.timer = setInterval(function(){
+            This.style.width = This.offsetWidth - 8 + 'px';
+            if(This.offsetWidth <= 100){
+                clearInterval(This.timer);
+                This.timer = null;
+            }
+        },30);
+    }
+</script>
+</body>
+</html>

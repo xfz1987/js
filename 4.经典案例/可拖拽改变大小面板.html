@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>可拖拽改变大小面板</title>
+    <style>
+        body{font-family:"微软雅黑";margin:0;padding:0;font-size:14px;color:#333;}
+        div{-webkit-user-select: none;user-select: none;-moz-user-select: none;}
+        .panel{width:400px;height:240px;border:1px solid #ccc;position:relative;}
+        .panel .title{background:#eee;text-align:center;line-height:30px;font-weight:bold;}
+        .ui-resize-r{position:absolute;right:0;bottom:0;width:10px;height:100%;cursor:e-resize;}
+        .ui-resize-b{position:absolute;right:0;bottom:0;width:100%;height:10px;cursor:n-resize;}
+        .ui-resize-rb{position:absolute;right:0;bottom:0;width:10px;height:10px;cursor:nw-resize;}
+    </style>
+</head>
+<body>
+    <div class="panel" id="ui-resizable">
+        <div class="title">Resizable Panel</div>
+<!--         <div class="ui-resize-r"></div>
+        <div class="ui-resize-b"></div>
+        <div class="ui-resize-rb"></div> -->
+    </div>
+    <script>
+        //面板，ctrl控制元素，type:r\b\rb
+        var m_panel,m_ctrl,m_type;
+        //鼠标
+        /**
+         * 鼠标是否按在控制元素，开始拖动，
+         * 鼠标相对ctrl的left，top
+         * 鼠标的新位置
+         */
+        var moving=0,m_start_x=0,m_start_y=0,m_to_x=0,m_to_y=0,min_width=0,min_height=0;
+        //为控制元素支持拖拽
+        function on_mousedown(e,panel,ctrl,type){
+            var e = e||window.event;
+            //计算鼠标在页面位置以及鼠标在当前元素的位置
+            m_start_x = e.pageX - ctrl.offsetLeft;
+            m_start_y = e.pageY - ctrl.offsetTop;
+            m_panel = panel;
+            m_ctrl = ctrl;
+            m_type = type;
+
+            //开始处理移动
+            moving = setInterval(on_move,10);
+
+        }
+
+        function on_move(){
+            if(moving){
+                var to_x = m_to_x - m_start_x;
+                to_x = to_x<min_width ? min_width : to_x;
+                var to_y = m_to_y - m_start_y;
+                to_y = to_y<min_height ? min_height : to_y;
+                switch(m_type){
+                    case 'r':
+                        m_ctrl.style.left = to_x + 'px';
+                        m_panel.style.width = to_x + 10 + 'px';
+                        break;
+                    case 'b':
+                        m_ctrl.style.top = to_y + 'px';
+                        m_panel.style.height = to_y + 10 + 'px';
+                        break;
+                    case 'rb':
+                        m_ctrl.style.left = to_x + 'px';
+                        m_ctrl.style.top = to_y + 'px';
+                        m_panel.style.width = to_x + 10 +'px';
+                        m_panel.style.height = to_y + 10 +'px';
+                        break;
+                }
+
+            }
+        }
+
+        //苏表移动时
+        document.onmousemove = function(e){
+            var e = e||window.event;
+            m_to_x = e.pageX;
+            m_to_y = e.pageY;
+        };
+        //鼠标松开时
+        document.onmouseup = function(){
+            clearInterval(moving);
+            moving = 0;
+            var cls = document.getElementsByClassName('ui-resize-ctrl');
+            for(var i=0,len=cls.length;i<len;i++){
+                cls[i].style.left='';
+                cls[i].style.top='';
+            }
+        }
+
+        //step1：为面板加入控制元素
+        function resizable(panel_id){
+            var panel = document.getElementById(panel_id);
+            var r = document.createElement('div');
+            var b = document.createElement('div');
+            var rb = document.createElement('div');
+            r.class = r.className = 'ui-resize-r ui-resize-ctrl';
+            b.class = b.className = 'ui-resize-b ui-resize-ctrl';
+            rb.class = rb.className = 'ui-resize-rb ui-resize-ctrl';
+            panel.appendChild(r);
+            panel.appendChild(b);
+            panel.appendChild(rb);
+
+            min_width = panel.offsetWidth;
+            min_height = panel.offsetHeight;
+                                console.log(min_width);
+                console.log(min_height);
+
+            r.addEventListener('mousedown',function(e){
+                on_mousedown(e,panel,r,'r');
+            });
+            b.addEventListener('mousedown',function(e){
+                on_mousedown(e,panel,b,'b');
+            });
+            rb.addEventListener('mousedown',function(e){
+                on_mousedown(e,panel,rb,'rb');
+            });
+        }
+        resizable('ui-resizable');
+    </script>
+</body>
+</html>

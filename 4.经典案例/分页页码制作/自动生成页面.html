@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body{min-width:750px;}
+        .container{
+            float:left;
+            position:relative;
+            left:50%;
+            margin-top:50px;
+        }
+        .page {
+            position:relative;
+            left:-50%;
+        }
+        /* 分页 */
+        .page{font-size:13px;color:#c5c5c5;list-style:none;}
+        .page li{ float:left;padding:10px 12px;border:1px solid #eee;border-left:none;cursor:pointer;}
+        .page li:hover{background:#f0f0f0;}
+        .page .cur{border:1px solid #abc0cd;background:#f0f0f0;}
+        .page .first{border-left:1px solid #eee;}
+        .page .etc{cursor:default;}
+        .page .etc:hover{background:#fff;}
+        .page .desc{border:none;padding:11px 12px;cursor:default;}
+        .page .desc:hover{background:#fff;}
+        .page .in-page{border-left:1px solid #eee;background:#fff;padding:0;}
+        .page .in-page:hover{background:#fff;}
+        .page .in-page input{padding:10px 12px;width:25px;outline:0;border:0;font-size:13px;text-align:center;}
+        .page .to-page{margin-left:10px;border-left:1px solid #eee;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <ul class="page">
+            <!--<li class="first">首页</li>-->
+            <!--<li class="prev">上一页</li>-->
+            <!--<li class="cur">1</li>-->
+            <!--<li class="pn">2</li>-->
+            <!--<li class="pn">3</li>-->
+            <!--<li class="etc">...</li>-->
+            <!--<li class="pn">24</li>-->
+            <!--<li class="pn">25</li>-->
+            <!--<li class="next">下一页</li>-->
+            <!--<li class="last">末页</li>-->
+            <!--<li class="desc">跳转至</li>-->
+            <!--<li class="in-page"><input type="text" maxlength="3"/></li>-->
+            <!--<li class="desc">页</li>-->
+            <!--<li class="to-page">确定</li>-->
+        </ul>
+    </div>
+    <script src="../js/jquery.min.js"></script>
+    <script>
+        pageOpt = {
+            pcur : 1,
+            pmax : 25
+        };
+
+        /**
+         * 生成页码
+         * pcur   当前页码
+         * pmax   最大页数
+         * */
+        var pageGen=function(pcur,pmax,selector){
+            var el = selector || '.page';
+            $(el).empty();
+
+            var htm = '<li class="first">首页</li><li class="prev">上一页</li>';
+            if(pmax<5){
+                for(var i=1;i<pmax+1;i++) i==pcur ? htm+='<li class="cur">'+i+'</li>' : htm+='<li class="pn">'+i+'</li>';
+            }else if(pcur<4){
+                for(var i=1;i<pcur+2;i++) i==pcur ? htm+='<li class="cur">'+i+'</li>' : htm+='<li class="pn">'+i+'</li>';
+                htm+='<li class="etc">...</li><li class="pn">'+pmax+'</li>';
+            }else if(pcur>pmax-3){
+                htm+='<li class="pn">1</li><li class="etc">...</li>';
+                for(var i=pcur-1;i<pmax+1;i++) i==pcur ? htm+='<li class="cur">'+i+'</li>' : htm+='<li class="pn">'+i+'</li>';
+            }else{
+                htm+='<li class="pn">1</li><li class="etc">...</li>'
+                +'<li class="pn">'+(pcur-1)+'</li><li class="cur">'+pcur+'</li><li class="pn">'+(pcur+1)+'</li>'
+                +'<li class="etc">...</li><li class="pn">'+pmax+'</li>';
+            }
+            htm += '<li class="next">下一页</li><li class="last">末页</li><li class="desc">跳转至</li><li class="in-page"><input type="text" maxlength="3"/></li><li class="desc">页</li><li class="to-page">确定</li>';
+            $(el).html(htm);
+        };
+
+        pageGen(pageOpt.pcur,pageOpt.pmax);
+
+        /* 分页事件 */
+        // 第一页
+        $('.page').on('click','.first',function(){
+            var nt=$(this).parent().find('.cur').text();
+            if(nt==1){alert('已经是第一页');return false;}
+            alert('点击了首页');
+            pageGen(1,pageOpt.pmax)
+        });
+        // 前一页
+        $('.page').on('click','.prev',function(){
+            var nt=$(this).parent().find('.cur').text();
+            if(nt==1){alert('已经是第一页');return false;}
+            nt--;
+            alert('点击了上一页，'+ nt);
+            pageGen(nt,pageOpt.pmax)
+        });
+        // 后一页
+        $('.page').on('click','.next',function(){
+            var nt=$(this).parent().find('.cur').text(),nm=$(this).prev().text();
+            if(nt==nm){alert('已经是最后一页');return false;}
+            nt++;
+            alert('点击了下一页，下一页为:'+nt);
+            pageGen(nt,pageOpt.pmax);
+        });
+
+        // 最后一页
+        $('.page').on('click','.last',function(){
+            var nt=$(this).parent().find('.cur').text(),nmd=$(this).parent().find('.next').prev(),nm=nmd.text();
+            if(nt==nm){alert('已经是最后一页');return false;}
+            alert('点击了最后一页');
+            pageGen(nm,pageOpt.pmax);
+        });
+
+        // 中间页
+        $('.page').on('click','.pn',function(){
+            var nt=parseInt($(this).text());
+            alert('点击了页：'+nt);
+            pageGen(nt,25);
+        });
+
+        // 选页
+        $('.page').on('click','.to-page',function(){
+            var nt=$(this).parent().find('.in-page input').val(),
+                nm=$(this).parent().find('.next').prev().text(),
+                ee=$(this).parent().parent().find('.cur').text();
+            nt=parseInt(nt);
+            nm=parseInt(nm);
+            ee=parseInt(ee);
+
+            if(isNaN(nt) || nt<1 || nt>nm || nt==ee) return false;
+            alert('输入了页：'+nt);
+            pageGen(nt,25);
+        });
+
+    </script>
+</body>
+</html>

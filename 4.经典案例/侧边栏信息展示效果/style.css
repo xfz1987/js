@@ -1,0 +1,175 @@
+@charset "utf-8";
+/*Gloable*/
+*{padding:0;margin:0;}
+ul{list-style:none;}
+
+/*sidebar*/
+#sidebar{width:35px;background:#e1e1e1;position:fixed;min-height:100%;padding-top:100px;}
+.item{font-size:12px;font-family:"微软雅黑";text-align:center;margin-top:5px;cursor:pointer;}
+
+#closeBar{position:absolute;bottom:30px;width:35px;text-align:center;cursor:pointer;}
+.nav-content{opacity:0;width:200px;position:fixed;z-index:-1;min-height:100%;background:#e1e1e1;border:1px solid #000;}
+.nav-content .nav-con-close{position:absolute;top:5px;right:5px;cursor:pointer;}
+
+.sidebar-move-left{
+    -webkit-animation:sml 1s 1 forwards linear;
+            animation:sml 1s 1 forwards linear;
+}
+@-webkit-keyframes sml{
+    from{}
+    to{
+        -webkit-transform:translate(-120px,0);
+                transform:translate(-120px,0);
+    }
+}
+@keyframes sml{
+    from{}
+    to{
+        -webkit-transform:translate(-120px,0);
+                transform:translate(-120px,0);
+    }
+}
+
+.sidebar-move-right{
+    -webkit-animation:smr 1s 1 forwards linear;
+            animation:smr 1s 1 forwards linear;
+}
+@-webkit-keyframes smr{
+    from{
+        -webkit-transform:translate(-120px,0);
+                transform:translate(-120px,0);
+    }
+    to{
+        -webkit-transform:translate(0,0);
+                transform:translate(0,0);
+    }
+}
+@keyframes smr{
+    from{
+        -webkit-transform:translate(-120px,0);
+                transform:translate(-120px,0);
+    }
+    to{
+        -webkit-transform:translate(0,0);
+                transform:translate(0,0);
+    }
+}
+
+.closeBar-move-right{
+    -webkit-animation:cmr .6s 1 forwards linear;
+            animation:cmr .6s 1 forwards linear;
+}
+@-webkit-keyframes cmr{
+    from{}
+    to{
+        -webkit-transform:translate(160px,0) rotate(405deg) scale(1.5);
+                transform:translate(160px,0) rotate(405deg) scale(1.5);
+    }
+}
+@keyframes cmr{
+    from{}
+    to{
+        -webkit-transform:translate(160px,0) rotate(405deg) scale(1.5);
+                transform:translate(160px,0) rotate(405deg) scale(1.5);
+    }
+}
+
+.closeBar-move-left{
+    -webkit-animation:cml .6s 1 forwards linear;
+            animation:cml .6s 1 forwards linear;
+}
+@-webkit-keyframes cml{
+    from{
+        -webkit-transform:translate(160px,0) rotate(405deg) scale(1.5);
+                transform:translate(160px,0) rotate(405deg) scale(1.5);
+    }
+    to{
+        -webkit-transform:translate(0,0) rotate(-405deg) scale(1);
+                transform:translate(0,0) rotate(-405deg) scale(1);
+    }
+}
+@keyframes cml{
+    from{
+        -webkit-transform:translate(160px,0) rotate(405deg) scale(1.5);
+                transform:translate(160px,0) rotate(405deg) scale(1.5);
+    }
+    to{
+        -webkit-transform:translate(0,0) rotate(-405deg) scale(1);
+                transform:translate(0,0) rotate(-405deg) scale(1);
+    }
+}
+
+.content-move-right{
+    -webkit-animation:mmr .5s 1 forwards linear;
+            animation:mmr .5s 1 forwards linear;
+}
+@-webkit-keyframes mmr{
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:1;
+        -webkit-transform:translate(120px,0);
+                transform:translate(120px,0);
+    }
+}
+@keyframes mmr{
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:1;
+        -webkit-transform:translate(120px,0);
+                transform:translate(120px,0);
+    }
+}
+
+.content-move-left{
+    -webkit-animation:mml .5s 1 forwards linear;
+            animation:mml .5s 1 forwards linear;
+}
+@-webkit-keyframes mml{
+    from{
+        opacity:1;
+    }
+    to{
+        opacity:0;
+        -webkit-transform:translate(-120px,0);
+                transform:translate(-120px,0);
+    }
+}
+@keyframes mml{
+    from{
+        opacity:1;
+    }
+    to{
+        opacity:0;
+        -webkit-transform:translate(-120px,0);
+                transform:translate(-120px,0);
+    }
+}
+
+.content-move-up{
+    -webkit-animation:mmu .5s 1 forwards linear;
+            animation:mmu .5s 1 forwards linear;
+}
+@-webkit-keyframes mmu{
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:1;
+        -webkit-transform:translate(0,-250px);
+                transform:translate(0,-250px);
+    }
+}
+@keyframes mmu{
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:1;
+        -webkit-transform:translate(0,-250px);
+                transform:translate(0,-250px);
+    }
+}

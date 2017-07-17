@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>qq空间时光轴特效</title>
+    <style>
+        /*整体结构*/
+        body{background:#1c0c0f url(images/1.jpg) no-repeat fixed;margin:0;padding:0;}
+        .top{width:100%;height:41px;position:fixed;top:0;background:#001e3b;z-index:1;box-shadow:0 1px 0 rgba(0,0,0,.2);}
+        .header{width:960px;height:200px;margin:41px auto 0;background:rgba(255,255,255,.2);}
+        .container{width:960px;margin:0 auto;position:relative;}
+        .container .scrubber{width:47px;min-height:200px;position:absolute;top:29px;left:0;z-index:2;}
+        .container .content{min-height:1000px;background:url(images/spine.png) repeat-y 121px;padding-top:50px;padding-left:160px;position:relative;}
+        /*细节补充*/
+        .container .scrubber a{display:block;height:26px;line-height:26px;font-size:12px;border-right:2px solid #c8c8c8;border-right-color:rgba(200,200,200,.5);padding-right:5px;color:#a5a5a5;text-decoration:none;text-shadow:0 1px 1px rgba(0,0,0,.3);text-align:right;}
+        .container .scrubber a:hover,.container .scrubber a.cur{border-right-color:#7ebad0;color:#7ebad0;font-weight:bold;}
+        .container .scrubber a:hover{text-decoration:underline;}
+        .container .scrubber a.cur:hover{text-decoration:none;}
+
+        .container .content .content_year,.container .content .content_month{height:30px;line-height:30px;color:#a5a5a5;text-shadow:0 1px 1px rgba(0,0,0,.3);font-weight:bold;font-size:14px;position:relative;left:-90px;}
+
+        .container .content .content_item{width:370px;min-height:300px;background:#fff;border-radius:4px;margin:20px 30px 0 0;position:relative;color:#888;}
+        .container .content .content_item_icon_arrow{width:0;height:0;border-color:transparent #fff transparent transparent;border-width:10px 10px 10px 0;border-style:dashed solid dashed dashed;position:absolute;left:-10px;top:20px;}
+        .container .content .content_item_icon_dot{width:11px;height:11px;border-radius:50%;background:#fff;position:absolute;top:25px;left:-43px;}
+        .container .content .content_item_icon_dot .content_item_icon_dot_child{width:7px;height:7px;border-radius:50%;background:#b3dae9;position:absolute;top:2px;left:2px;}
+        .container .content .content_item_head{padding:15px 15px 0;}
+        .container .content .content_item_head .content_item_head_title{height:46px;line-height:46px;font-size:28px;padding:0 0 10px 56px;position:relative;}
+        .container .content .content_item_head .content_item_head_title_lunar{width:46px;height:46px;background:#b3dae9;border-radius:8px;position:absolute;top:0;left:0;overflow:hidden;color:#fff;font-size:23px;line-height:23px;}
+        .container .content .content_item_head .content_item_head_intro{font-size:14px;line-height:22px;padding:0 15px;margin-bottom:10px;}
+        .ui_icon{display:inline-block;width:15px;height:15px;font-size:0;overflow:hidden;background-repeat:no-repeat;background-image:url(images/timeline.png);margin-right:5px;vertical-align:bottom;}
+        .ui_icon_quote_before{background-position:-986px -85px;}
+        .ui_icon_quote_after{background-position:-986px -102px;vertical-align:top;}
+        .container .content .content_item_media{height:277px;overflow:hidden;padding-bottom:10px;}
+        .container .content .content_item_footer{padding:10px 15px;margin:0 15px;border-top:1px solid #d6d6d6;font-size:12px;color:#b2b2b2;line-height:20px;}
+        .container .content .content_item_footer .content_item_footer_info a{color:#b2b2b2;text-decoration:none;padding-right:10px;display:inline-block;height:20px;}
+        .container .content .content_item_footer .content_item_footer_info a i{display:inline-block;width:20px;height:20px;font-size:0;overflow:hidden;background-repeat:no-repeat;background-image:url(images/timeline.png);margin-right:5px;vertical-align:bottom;}
+        .icon_zan{background-position:-883px -21px}
+        .icon_ping{background-position:-897px -42px}
+        .container .content .content_item_footer .content_item_footer_like{padding:5px;}
+    </style>
+</head>
+<body>
+    <div class="top"></div>
+    <div class="header"></div>
+    <div class="container">
+        <div class="scrubber">
+            <a href="javascript:;" class="scrubber-year cur">2014</a>
+            <a href="javascript:;" class="scrubber-month">3月</a>
+            <a href="javascript:;" class="scrubber-month">2月</a>
+        </div>
+        <div class="content">
+            <div class="content_year">2014</div>
+            <div class="content_month">3月</div>
+            <div class="content_item">
+                <div class="content_item_icon_arrow"></div>
+                <div class="content_item_icon_dot">
+                    <div class="content_item_icon_dot_child"></div>
+                </div>
+                <div class="content_item_head">
+                    <div class="content_item_head_title">
+                        <div class="content_item_head_title_lunar">
+                            三<br>&nbsp;十
+                        </div>
+                        2014-03-30
+                    </div>
+                    <div class="content_item_head_intro">
+                        <i class="ui_icon ui_icon_quote_before"></i>
+                        在这春林初盛，草长莺飞的日子，QQ空间愿你关掉电脑，放下手机，与三五好友相约青山绿水中，感受春天带来的勃勃生机···
+                        <i class="ui_icon ui_icon_quote_after"></i>
+                    </div>
+                </div>
+                <div class="content_item_media">
+                    <img src="images/psb.jpeg" width="370">
+                </div>
+                <div class="content_item_footer">
+                    <div class="content_item_footer_info">
+                        <i class="icon_zan"></i>
+                        <a href="javascript:;" title="赞"><i class="icon_zan"></i>(199)</a>
+                        <a href="javascript:;" title="评论"><i class="icon_ping"></i>(2199)</a>
+                    </div>
+                    <div class="content_item_footer_like">
+                        2.5万人觉得很赞
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

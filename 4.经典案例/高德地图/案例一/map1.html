@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>高德地图</title>
+    <style>
+        *{margin:0;padding:0;}
+        html,body{width:100%;height:100%;}
+        #map{width:100%;height:100%;}
+
+    </style>
+</head>
+<body>
+    <div id="map">
+        <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=4097120667e49b4c436794af12295ced"></script>
+        <script>
+            (function(){
+                var map = new AMap.Map('map');
+                //map.setCity('七台河');
+                //console.log(map.getCity);
+                map.setZOOM(18);
+            })();
+
+
+        </script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>图片展示-鼠标移入显示详细信息</title>
+<style>
+div, ul, li, dl, dt, dd, img, a {
+	margin: 0;
+	padding: 0;
+}
+ul, li, dl, dt, dd {
+	list-style: none;
+}
+img {
+	border: 0;
+}
+.clearfix:after { 
+    content:".";
+	display:block;
+	height:0;
+	clear:both;
+	visibility:hidden;
+}
+* html .clearfix {
+	height:1%;
+} 
+.demo {
+	margin: 0 auto;
+    width:912px;
+	display:block;
+}
+
+#orginImg li {
+	float: left;
+	position: relative;
+	width:300px;
+	height:170px;
+    border: 2px solid #ccc;
+	margin:10px 0 ;
+}
+#orginImg li a {
+	display: block;
+}
+#orginImg li div {
+	position: absolute;
+	top: -2px;
+	left: 100%;
+	z-index: 22;
+	background: #ccc;
+	width: 300px;
+	height: 170px;
+	border: 2px solid #F00;
+	display: none;
+}
+#orginImg li div dl{
+    color:#fff;
+	font-weight:bold;
+	padding:10px;
+}
+#orginImg li div dl dt{
+	text-align:center;
+}
+#orginImg li div dl dd{
+	text-indent:2em;
+}
+</style>
+</head>
+
+<body>
+<div class="demo">
+    <ul class="clearfix" id="orginImg" >
+        <li> 
+           <a href="http://imooc.com"><img src="img/1.jpg"  /></a> 
+           <div> 
+              <dl>
+                <dt>学会html5 绝对的屌丝逆袭</dt>
+                <dd>本课程由浅入深，逐步推进，以示例为主线，详细完整地介绍HTML5的新功能与新特征</dd>
+              </dl>
+           </div> 
+        </li>
+        <li> 
+           <a href="http://imooc.com"><img src="img/2.jpg"  /></a> 
+           <div>
+               <dl>
+                   <dt>圆角水晶按钮制作</dt>
+                   <dd>网页中的圆角按钮和宽度自适应按钮就这么轻松制作</dd>
+               </dl>
+           </div> 
+        </li>
+        <li> 
+           <a href="http://imooc.com"><img src="img/3.jpg"  /></a> 
+           <div> 
+              <dl>
+                   <dt>导航条菜单的制作</dt>
+                   <dd>30分钟教你轻松制作出各种形式的网站导航条菜单</dd>
+               </dl>
+         </div> 
+       </li>
+       <li> 
+           <a href="http://imooc.com"><img src="img/4.jpg"  /></a> 
+           <div> 
+              <dl>
+                <dt>tab页面切换效果</dt>
+                <dd>tab切换风格多样，但实现思路大同小异。教程由浅入深教你实现简洁思路的选项卡</dd>
+              </dl>
+           </div> 
+        </li>
+        <li> 
+           <a href="http://imooc.com"><img src="img/5.jpg"  /></a> 
+           <div>
+               <dl>
+                   <dt>信息列表制作</dt>
+                   <dd>让你玩转信息列表制作</dd>
+               </dl>
+           </div> 
+        </li>
+        <li> 
+           <a href="http://imooc.com"><img src="img/6.jpg"  /></a> 
+           <div> 
+              <dl>
+                   <dt>JavaScript基础课程</dt>
+                   <dd>JavaScript带你进入网页动态交互世界</dd>
+               </dl>
+         </div> 
+       </li>
+    </ul>
+</div>
+<script>
+  var lis = document.getElementById("orginImg").getElementsByTagName("li");
+  for(i = 0; i<lis.length; i++){
+	  lis[i].onmouseover = showDetail;
+	  lis[i].onmouseout = hideDetail;
+  }
+  
+  var lastLi; 
+  lastLi = lis[lis.length-1];
+  lastLi.getElementsByTagName("div")[0].style.left='auto';
+  lastLi.getElementsByTagName("div")[0].style.right='100%';
+  var j =lis.length;
+  while(j){
+	  if(j%3==0){
+		  lastLi = lis[j-1];
+		  lastLi.getElementsByTagName("div")[0].style.left='auto';
+		  lastLi.getElementsByTagName("div")[0].style.right='100%';
+		  }
+    j--;
+	}
+  
+  function showDetail(){
+	 this.getElementsByTagName("div")[0].style.display = 'block';
+  }
+  function hideDetail(){
+	 this.getElementsByTagName("div")[0].style.display = 'none';
+  }
+</script>
+</body>
+</html>
