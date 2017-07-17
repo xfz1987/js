@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+		//我们先看看一个案9例
+		var Book = function(title,time,type){
+			this.title = title;
+			this.time = time;
+			this.type = type;
+		}
+		var book1 = Book('Vue','2015','js');
+		console.log(book1);//undefined
+		console.log(window.title);//Vue
+		var book2 = new Book('Angular','2014','js');
+		console.log(book2);//{title: "Angular", time: "2014", type: "js"}
+		/**
+		 * 分析: why：没有new就是undefined,怎么title，time，type被添加到window上去了呢？
+		 *
+		 *  new关键字的作用可以看作是对当前对象的this不停地赋值，然而book1没有new，所以会直接执行这个函数，那么里面的this指向的就是window了
+		 *  所以window有title属性，由于没有return语句，所以book1为undefined
+		 * 
+		 *  如何避免忘记写 new 而带来不好的结果呢？
+		 *  安全创建对象模式
+		 */
+		
+		var Book = function(title,time,type){
+			//判断执行过程中this是否是当前这个对象(如果是说明是实例是通过new创建的),否则自己创建这个对象
+			if(this instanceof Book){
+				this.title = title;
+				this.time = time;
+				this.type = type;
+			}else{
+				return new Book(title,time,type);
+			}
+		}
+
+		var book = Book('React','2015','js');
+		console.log(book.title);//React
+		console.log
+
+	</script>
+</body>
+</html>

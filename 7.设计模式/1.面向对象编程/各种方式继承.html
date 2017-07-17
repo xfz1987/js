@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>各种方式继承</title>
+</head>
+<body>
+	<!-- 继承: 是对原有对象的封装，从中创建私有属性、私有方法、特权方法、共有属性、共有方法 -->
+
+
+	<!-- 类式继承 : 子类的原型对象 - 有隐患-->
+	<script>
+		//声明父类
+		function SuperClass(){
+			this.superVal = true;
+		}
+		//为父类添加共有方法
+		SuperClass.prototype.getSuperVal = function(){
+			return this.superVal;
+		}
+
+		//声明子类
+		function SubClass(){
+			this.subVal = false;
+		}
+
+		//继承父类
+		SubClass.prototype = new SuperClass();
+		SubClass.prototype.getSubVal = function(){
+			return this.subVal;
+		}
+
+		//创建实例
+		var instance = new SubClass();
+		console.log(instance.getSuperVal());//true
+		console.log(instance.getSubVal());//true
+		//instanceof 是通过判断对象的prototype链来确定这个对象是否是某个对象的实例(判断前面对象是否是后面对象的实例),
+		console.log(instance instanceof SubClass);//true
+		console.log(instance instanceof SuperClass);//true
+		console.log(SubClass instanceof SuperClass);//false，他不表示
+		console.log(SubClass.prototype instanceof SuperClass);//true
+
+		/**
+		 * 类式继承缺点：
+		 *   1.由于子类通过其原型prototype对父类实例化，继承了父类，所以父类中的共有属性要是'引用类型'，就会在子类中被所有实例公用
+		 *     因此，一个子类的实例更改子类原型从父类构造函数中继承来的共有属性就会直接影响到其他子类
+		 *     在编程过程中，很容易埋下陷阱
+		 *
+		 *   2.在实例化父类的时，是无法向父类传递参数的，因而在实例化的时候也无法对父类构造函数内的属性进行初始化从而个性化配置
+		 */
+		function SuperClass(){
+			this.books = ['js','html','css'];
+		}
+		function SubClass(){}
+		SubClass.prototype = new SuperClass();
+		var instance1 = new SubClass();
+		var instance2 = new SubClass();
+		console.log(instance1.books);//['js','html','css']
+		instance1.books.push('java');
+		console.log(instance2.books);//['js','html','css','java']
+	
+	</script>
+	
+	<!-- 构造函数继承 : 创建即继承 - 违反代码复用原则-->
+	<script>
+		function SuperClass(id){
+			//引用类型共有属性
+			this.books = ['js','html','css'];
+			//值类型共有属性
+			this.id = id;
+		}
+		SuperClass.prototype.showBooks = function(){
+			console.log(this.books);
+		}
+		function SubClass(id){
+			//继承父类
+			SuperClass.call(this, id);
+		}
+		var instance1 = new SubClass(1);
+		var instance2 = new SubClass(2);
+		instance1.books.push('java');
+		console.log(instance1.books);//['js','html','css','java']
+		console.log(instance1.id);//1
+		console.log(instance2.books);//['js','html','css']
+		console.log(instance2.id);//2
+		//console.log(instance1.showBooks());//TypeError: instance1.showBooks is not a function
+
+		/**
+		 * 构造函数继承优点：
+		 *    call方法可以改变函数的作用域，
+		 *    SuperClass.call(this, id) 表示 将子类中变量在父类中执行一遍，由于父类是通过this绑定属性的，一次子类也就继承了父类的共有属性
+		 *   
+		 * 缺点：
+		 *    构造函数继承没有涉及原型prototype，所以父类的原型方法自然不会被子类继承，
+		 *    父类方法要想被子类继承，就必须放在构造函数中
+		 *    这样创建出来的每个实例都会单独拥有一份而不能公用，这就违背了代码复用原则，
+		 *    所以这种继承模式没有实际意义
+		 */
+
+	</script>
+
+	<!-- 组合继承 : 类式继承 + 构造函数继承 - 互补缺点，虽然实现了继承，但是有点资源浪费 -->
+	<script>
+		/**
+		 * 回顾一下上面两种继承方式
+		 *   1.    类式继承：通过子类的原型prototype对父类实例化而实现
+		 *   2.构造函数继承：通过在子类的构造函数作用域中执行一次父类的构造函数而实现
+		 *   1+2 我们看看效果
+		 */
+		function SuperClass(id){
+			//引用类型共有属性
+			this.books = ['js','html','css'];
+			//值类型共有属性
+			this.id = id;
+		}
+		//父类共有方法
+		SuperClass.prototype.getId = function(){
+			return this.id;
+		}
+		function SubClass(id,time){
+			//继承父类的id属性
+			SuperClass.call(this, id);
+			//子类新增共有属性
+			this.time = time;
+		}
+		//继承父类的共有方法
+		SubClass.prototype = new SuperClass();
+		SubClass.prototype.getTime = function(){
+			return this.time;
+		}
+
+		var instance1 = new SubClass(1,2014);
+		var instance2 = new SubClass(2,2015);
+		instance1.books.push('java');
+		console.log(instance1.books);//['js','html','css','java']
+		console.log(instance1.getId());//1
+		console.log(instance1.getTime());//2014
+		console.log(instance2.books);//['js','html','css']
+		console.log(instance2.getId());//2
+		console.log(instance2.getTime());//2015
+
+		/**
+		 * 组合式继承缺点：
+		 *   构造函数继承时执行了一遍父类的构造函数，实现子类原型继承的类式继承时又调用了一遍父类构造函数
+		 *   因此父类的构造函数被调用了2遍，有点资源浪费
+		 */
+		
+	</script>
+	
+	<!-- 原型式继承 : 洁净的继承者 - 跟类式继承一样的缺点 -->
+	<script>
+		//道格拉斯·克罗克福德说：借助原型prototype可以根据已有的对象创建一个新的对象，同时不必创建新的自定义对象类型，有点蒙逼，还是直接看代码吧
+		function inheritObject(o){
+			//声明一个过渡函数对象
+			function F(){}
+			//过度对象的原型继承父对象
+			F.prototype = o;
+			//返回过渡对象的一个实例，该实例的原型继承了父对象
+			return new F();
+		}
+
+		var book = {
+			name: 'java',
+			alikeBook: ['html','css','javascript'] 
+		};
+
+		var newBook = inheritObject(book);
+		newBook.name = 'ajax';
+		newBook.alikeBook.push('xml');
+		var otherBook = inheritObject(book);
+		otherBook.name = 'json';
+		console.log(newBook.name);//ajax
+		console.log(newBook.alikeBook);//['html','css','javascript','xml'];
+		console.log(otherBook.name) ;//json
+		console.log(newBook.alikeBook);//['html','css','javascript','xml'];
+
+	</script>
+
+	<!-- 寄生式继承 : 原型继承的二次封装 -->
+	<script>
+		var book = {
+			name: 'java',
+			alikeBook: ['html','css','javascript'] 
+		};
+		function createBook(obj){
+			var o = new inheritObject(obj);
+			o.getName = function(){
+				return this.name;
+			}
+			return o;
+		}
+		var b1 = createBook(book);
+		console.log(b1.getName());//java
+
+		/**
+		 * 特点:
+		 *   寄生式继承就是对原型继承的二次封装，并且在二次封装的过程中对继承的对象进行了拓展，
+		 *   这样新创建的子类不仅继承的父类的属性和方法，还有自己的属性和方法
+		 */
+
+	</script>
+
+	<!-- 寄生组合式继承 : 终极继承者 -->
+	<script>
+		/**
+		 * 寄生式继承 继承原型
+		 * descripe  它处理的不是对象，而是类的原型
+		 * @param  subClass   [子类]
+		 * @param  superClass [父类]
+		 */
+		function inheritPrototype(subClass,superClass){
+			//复制一份父类的原型副本保存在变量中
+			var p = inheritObject(superClass.prototype);
+			//修正因为重写子类原型导致子类的constructor属性被修改
+			p.constructor = subClass;
+			//设置子类的原型
+			subClass.prototype = p;
+		}
+
+		function SuperClass(name){
+			this.name = name;
+			this.colors = ['red','blue'];
+		}
+		SuperClass.prototype.getName = function(){
+			return this.name;
+		}
+		function SubClass(name,time){
+			//构造函数式继承
+			SuperClass.call(this, name);
+			//子类新增属性
+			this.time = time;
+		}
+		//寄生式继承父类原型
+		inheritPrototype(SubClass,SuperClass);
+		//子类新增原型方法
+		SubClass.prototype.getTime = function(){
+			return this.time;
+		};
+		var ins1 = new SubClass('java',2014);
+		var ins2 = new SubClass('css',2012);
+		ins1.colors.push('green');
+		console.log(ins1.colors);//['red','blue','green']
+		console.log(ins2.colors);//['red','blue']
+		console.log(ins2.getName());//css
+		console.log(ins2.getTime());//2012
+
+	</script>
+
+</body>
+</html>

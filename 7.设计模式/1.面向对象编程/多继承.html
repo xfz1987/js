@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>多继承</title>
+</head>
+<body>
+	<!-- 多继承 - 父亲不止只有一位 -->
+	<script>
+		// ! 理论上: 继承是依赖原型prototype链实现的，只有一条原型链，所以不能继承多个父类
+		
+		//单继承 属性复制
+		var extend = function(target, source){
+			//遍历源对象中的属性
+			for(var property in source){
+				//将源对象中的属性复制到目标对象中
+				target[property] = source[property];
+			}
+			//返回目标对象
+			return target;
+		}
+
+		var book = {
+			name: 'java',
+			alike: ['html','css']
+		};
+		var anotherBook = {color:'black'};
+		extend(anotherBook, book);
+		console.log(anotherBook.name);//java
+		console.log(anotherBook.alike);//['html','css']
+		console.log(anotherBook.color);//black
+		anotherBook.alike.push('ajax');
+		anotherBook.name = 'js';
+		console.log(book.name);//java
+		console.log(book.alike);//['html','css','ajax']
+		/*缺点：还是影响到book的引用类型属性*/
+
+
+		//多继承
+		Object.prototype.mix = function(){
+			var i = 0,                //从第一个参数起为被继承的对象
+			  len = arguments.length, //参数长度
+			  arg;                    //缓存参数对象
+			for(;i<len;i++){
+				arg = arguments[i];
+				for(var property in arg){
+					this[property] = arg[property];
+				}
+			}
+		};
+		var book1 = {
+			name: 'java',
+			alike: ['html','css']
+		}
+		var book2 = {
+			time: 2016
+		}
+		var otherBook = {};
+		otherBook.mix(book1,book2);
+		console.log(otherBook);//{name: "java", alike: Array[2], time: 2016}
+
+	</script>
+	
+</body>
+</html>

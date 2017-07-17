@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>多态</title>
+</head>
+<body>
+	<!-- 实现原理: 对传递过来的参数进行判断，从而决定执行哪个方法 -->
+	<script>
+		//定义一个add方法，如果不传参数则返回10，如果传递一个参数则返回10+参数，如果传两个参数则返回这两个参数相加的结果
+		function add(){
+			var arg = arguments,
+			    len = arg.length;
+			switch(len){
+				case 0:
+					return 10;
+					break;
+				case 1:
+					return arg[0] + 10;
+					break;
+				case 2:
+					return arg[0] + arg[1];
+					break;
+			}
+		}
+		console.log(add());//10;
+		console.log(add(5));//15;
+		console.log(add(5,6));//11;
+
+		//类型时书写
+		function Add(){
+			function zero(){
+				return 10;
+			}
+			function one(num){
+				return 10 + num;
+			}
+			function two(num1,num2){
+				return num1 + num2;
+			}
+		}
+		Add.prototype.add = function(){
+			var arg = arguments,
+			    len = arguments.length;
+			switch(len){
+				case 0:
+					return zero();
+				case 1:
+					return one(arg[0]);
+				case 2:
+					return two(arg[0],arg[1]);
+			}
+		}
+		console.log(add());//10;
+		console.log(add(5));//15;
+		console.log(add(5,6));//11;
+
+	</script>
+</body>
+</html>
