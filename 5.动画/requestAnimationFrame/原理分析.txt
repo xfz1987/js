@@ -1,0 +1,25 @@
+背景
+Internet Explorer 10 和使用 JavaScript 的 Windows 应用商店应用引入了对 requestAnimationFrame 方法的支持，
+该方法通过在系统准备好绘制动画帧时调用该帧，从而为创建动画网页提供了一种更平滑更高效的方法。
+此 API 之前，使用 setTimeout 和 setInterval 绘制的动画并没有为 Web 开发人员提供有效的方法来规划动画的图形计时器。
+这导致了动画过度绘制，浪费 CPU 周期以及消耗额外的电能等问题。
+而且，即使看不到网站，特别是当网站使用背景选项卡中的页面或浏览器已最小化时，动画都会频繁出现
+
+W3C：requestAnimationFrame 方法可以解决丢失帧的问题，
+     因为它使应用能够在浏览器需要更新页面显示时（而且仅在这种情况下）获得通知
+     从 setTimeout 切换到 requestAnimationFrame 非常容易，因为它们都规划单个回调。
+     要实现持续的动画，请在调用动画函数后再次调用 requestAnimationFrame
+
+优势：
+ * 对于一个侦中对DOM的所有操作，只进行一次Layout和Paint。
+ * 如果发生动画的元素被隐藏了，那么就不再去Paint。
+
+原理:
+1.记录当前时间startTime，作为动画开始的时间。
+2.请求下一帧，带上回调函数。
+3.下一帧触发时，回调函数的第一个参数为当前的时间，再与startTime进行比较，确定时间间隔ellapseTime。
+4.判断ellapseTime是否已经超过事先设定的动画时间time，如果超过，则结束动画。
+5.计算动画属性变化的差值differ = to – from，再确定在ellapseTime的时候应该变化多少step = differ / time * ellapseTime。
+6.计算出现在应该变化到的位置Math.round(from + step)，并重新对样式赋值。
+7.继续请求下一帧。
+

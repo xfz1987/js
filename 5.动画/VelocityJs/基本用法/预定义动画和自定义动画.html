@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>预定义动画和自定义动画</title>
+    <style>
+        .box{width:100px;height:100px;margin:20px;background:pink;}
+    </style>
+</head>
+<body>
+    <div id="d1" class="box"></div>
+    <div id="d2" class="box"></div>
+    <div id="d3" class="box"></div>
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/velocity.js"></script>
+    <script src="../js/velocity.ui.min.js"></script>
+    <script>
+        $(function(){
+            //预定义动画（要引入velocity.ui.min.js）
+            $('#d1').on('mouseover',function(){
+                $(this).velocity('callout.shake');
+            });
+
+            //自定义动画(一次定义，多处使用)
+            $.Velocity.RegisterEffect('look',{
+                defaultDuration:300,
+                calls:[
+                    [{scaleX:1.1},0.5],//0.5表示这个效果在整个动画时间300ms中占50%
+                    [{scaleX:1.0},0.5]
+                ]
+            });
+            $('#d2').on('mouseover',function(){
+                $(this).velocity('look');
+            });
+
+        });
+    </script>
+</body>
+</html>

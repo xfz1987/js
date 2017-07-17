@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>实现动画的三种方式</title>
+    <style>
+        .box{width:100px;height:100px;margin:20px;background:pink;}
+    </style>
+</head>
+<body>
+    <div id="d1" class="box"></div>
+    <div id="d2" class="box"></div>
+    <div id="d3" class="box"></div>
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/velocity.js"></script>
+    <script src="../js/velocity.ui.min.js"></script>
+    <script>
+        $(function(){
+            /* 三种实现依次动画的方式 */
+
+            //1.方式一: 这种方式太麻烦，还得手动控制delay
+            // $('#d1').velocity({
+            //     width:'300px'
+            // },{
+            //     duration:3000
+            // });
+
+            // $('#d2').velocity({
+            //     width:'300px'
+            // },{
+            //     duration:3000,
+            //     delay:3000
+            // });
+
+            //2.方式二: 这种方式也不好，需要不断增加complete
+            // $('#d1').velocity({
+            //     width:'300px'
+            // },{
+            //     duration:3000,
+            //     complete:function(){
+            //         $('#d2').velocity({
+            //              width:'300px'
+            //         },{
+            //             duration:3000,
+            //             complete:function(){}
+            //         });
+            //     }
+            // });
+
+            //3.方式三: 利用动画序列来依次执行动画
+            var seq = [
+                {
+                    elements:$('#d1'),
+                    properties:{width:'300px'},
+                    options:{duration:3000}
+                },{
+                    elements:$('#d2'),
+                    properties:{width:'300px'},
+                    options:{duration:3000}
+                },{
+                    elements:$('#d3'),
+                    properties:{width:'300px'},
+                    options:{duration:3000}
+                }
+            ];
+            $.Velocity.RunSequence(seq);
+        });
+    </script>
+</body>
+</html>

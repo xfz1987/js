@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>利用预定义动画实现案例</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="box">
+            <img src="images/back.jpg">
+            <img class="buddy" src="images/head.jpg">
+            <div class="inner">
+                <h3>学啥网</h3>
+                <span>学啥网,只找最合适的</span>
+                <div class="btn">快来点我</div>
+            </div>
+        </div>
+        <div class="pop">
+            <div class="close">&times;</div>
+            <h3>学啥网</h3>
+            <span>学啥网,只找最合适的</span>
+            <img src="images/pic1.jpg">
+            <img src="images/pic2.jpg">
+            <img src="images/pic3.jpg">
+            <img src="images/pic4.jpg">
+        </div>
+    </div>
+
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/velocity.js"></script>
+    <script src="../js/velocity.ui.min.js"></script>
+    <script>
+        $(function(){
+            var container = $('.container'),
+                box = $('.box'),
+                buddy = $('.buddy'),
+                pop = $('.pop'),
+                imgs = pop.find('img');
+
+            //入场动画
+            $.Velocity.RegisterEffect('come',{
+                defaultDuration:500,
+                calls:[
+                    [{opacity:[1,0],translateY:[0,100]}]//[end,start]
+                ]
+            });
+
+            //出场动画
+            $.Velocity.RegisterEffect('out',{
+                defaultDuration:300,
+                calls:[
+                    [{opacity:[0,1],translateY:[100,0]}]//[end,start]
+                ]
+            });
+
+            //卡片弹出
+            $.Velocity.RegisterEffect('scaleIn',{
+                defaultDuration:300,
+                calls:[
+                    [{opacity:[1,0],scale:[1,0.3]}]//[end,start]
+                ]
+            });
+
+            //卡片退出
+            $.Velocity.RegisterEffect('scaleOut',{
+                defaultDuration:300,
+                calls:[
+                    [{opacity:[0,1],scale:[0.3,1]}]//[end,start]
+                ]
+            });
+
+            var seqInit = [{
+                elements:container,
+                properties:'come',
+                options:{delay:300}
+            },{
+                elements:box,
+                properties:'come',
+                options:{sequenceQueue:false}//序列式默认依次执行，设置false可以同时执行
+            },{
+                elements:buddy,
+                properties:'come',
+                options:{delay:60}
+            }];
+
+            $.Velocity.RunSequence(seqInit);
+
+            //按钮点击后的动画
+            var seqClick = [{
+                elements:container,
+                properties:'out'
+            },{
+                elements:box,
+                properties:'out',
+                options:{sequenceQueue:false}//序列式默认依次执行，设置false可以同时执行
+            },{
+                elements:container,
+                properties:'come'
+            },{
+                elements:pop,
+                properties:'come',
+                options:{sequenceQueue:false}
+            },{
+                elements:imgs,
+                properties:'scaleIn'
+            }];
+
+            $('.inner .btn').on('click',function(){
+                $.Velocity.RunSequence(seqClick);
+            });
+
+            var seqClose = [{
+                elements:imgs,
+                properties:'scaleOut'
+            },{
+                elements:container,
+                properties:'out'
+            },{
+                elements:pop,
+                properties:'out',
+                options:{sequenceQueue:false}//序列式默认依次执行，设置false可以同时执行
+            },{
+                elements:container,
+                properties:'come'
+            },{
+                elements:box,
+                properties:'come',
+                options:{sequenceQueue:false}
+            },{
+                elements:buddy,
+                properties:'come',
+                options:{delay:60}
+            }];
+
+            $('.close').on('click',function(){
+                $.Velocity.RunSequence(seqClose);
+            });
+        });
+    </script>
+</body>
+</html>

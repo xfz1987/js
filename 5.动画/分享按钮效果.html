@@ -1,0 +1,57 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分享按钮效果</title>
+    <style>
+        *{margin:0;padding:0;}
+        .cropper{position:relative;left:-150px;width:150px;height:400px;background:#ccc;}
+        .cropper .share{position:absolute;width:25px;padding:15px 0;line-height:26px;right:-25px;top:50%;margin-top:-40px;color:#999;text-align:center;background:#ccc;border-radius:0 3px 3px 0;cursor:pointer;}
+    </style>
+</head>
+<body>
+    <div class="cropper">
+        <span class="share">分享</span>
+    </div>
+    <script>
+        window.onload = function(){
+            var timer;
+            var oDiv = document.querySelector('.cropper');
+            var share = oDiv.querySelector('.share');
+            var isClosed = true;
+            var oPos = oDiv.offsetLeft;
+            share.onclick = function(){
+                onOff();
+            };
+
+            function onOff(){
+                // share.innerHTML === '分享' ? () : ();
+                timer = setInterval(function(){
+                    if(isClosed){
+                        var left = oDiv.offsetLeft;
+                        var speed = Math.floor(left/6);
+                        oDiv.style.left = left - speed + 'px';
+                        if(left>=0){
+                            isClosed = false;
+                            share.innerHTML = '收起';
+                            clearInterval(timer);
+                            timer = null;
+                        }
+                    }else{
+                        var left = oDiv.offsetLeft;
+                        oDiv.style.left = left - 10 + 'px';
+                        console.log(333);
+                        if(left<=oPos+10){
+                            console.log(4444);
+                            isClosed = true;
+                            share.innerHTML = '分享';
+                            clearInterval(timer);
+                            timer = null;
+                        }
+                    }
+
+                },30);
+            }
+        };
+    </script>
+</body>
+</html>

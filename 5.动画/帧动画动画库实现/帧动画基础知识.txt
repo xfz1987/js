@@ -1,0 +1,92 @@
+* 常见帧动画方式：
+  * GIF
+  * CSS3 animation
+  * Javascript
+
+* 实现方式：
+  利用CSS精灵，定时改变元素的background-image
+
+* 设计一个通用的帧动画库
+  * 需求分析 -> 编程接口 -> 调用设计 -> 代码设计
+
+  * 需求分析
+    1.支持图片预加载
+    2.支持2种动画播放方式，及自定义每帧动画（回调函数）
+    3.支持单组动画控制循环次数（可支持无限次）
+    4.支持一组动画完成，进行下一组动画
+    5.支持每个动画完成后有等待时间
+    6.支持动画暂停和继续播放
+    7.支持动画完成后执行回调函数
+
+  * 编程接口
+    1.loadImage(imglist)//预加载图片
+    2.changePosition(ele,positions,imageUrl)//通过改变background-position实现动画
+    3.changeSrc(ele,imglist)//通过改变image元素的src
+    4.enterFrame(callback)//每一帧动画执行的函数
+    5.repeat(times)//动画重复执行次数，times为空时表示无限次
+    6.repeatForever()//无限重复上一次动画，相当于repeat(),更友好的一个接口
+    7.wait(time)//每个动画执行完成后等待的时间
+    8.then(callback)//动画执行完成后的回调函数
+    9.start(interval)//动画开始执行，interval表示每个动画执行的间隔
+    10.pause()//动画暂停
+    11.restart()//动画从上一次暂停处重新执行
+    12.dispose()//释放资源
+
+  * 调用方式
+    * 支持链式调用
+    var animation = require('animation');
+    var demoAnimation = animation().loadImage(images)
+        .changePostion(ele,posiitons).repeat(2)
+        .then(function(){
+        	//动画执行完成后调用函数
+        });
+    demoAnimation.start(80);
+
+  * 代码设计
+  	1. 把 图片预加载 -> 动画执行 -> 动画结束 等一系列操作堪称一条任务链（数组）
+  	  * 任务链有两种类型的任务
+  	    1. 同步执行的
+  	    2.异步定时执行的（通过计时器或者raf）
+  	2. 记录当前任务链的索引
+
+  	3. 每个任务执行完毕后，通过调用 next 方法，执行下一个任务，同时更新任务链索引值
+
+* 使用webpack，打包工具
+  * 安装  全局  npm install -g webpack
+  * 新建package.json
+  * 新增webpack.config.js
+  * 项目目录下，执行 webpack
+
+json:
+{
+  "name": "animation",
+  "version": "0.1.0",
+  "devDependencies": {
+    "webpack": "^1.12.11"
+  }
+}
+
+config:
+// var path = require('path');
+// var version = require('./package.json').version;
+// var webpack = require('webpack');
+
+module.exports = {
+  entry: {
+    animation: './src/animation.js'
+  },
+  output: {
+    path: __dirname + '/build',
+    filename: '[name].js',//[name] 就是 entry 的 key
+    library: 'animation',//在window上注册一个animation对象
+    libraryTarget: 'umd'//支持cmd也支持amd
+  }
+  // resolveLoader: {
+  //  root: path.join(__dirname, 'node_modules')
+  // },
+  // plugins: [
+  //  new webpack.DefinePlugin({
+  //    __VERSION__: JSON.stringify(version)
+  //  })
+  // ]
+};

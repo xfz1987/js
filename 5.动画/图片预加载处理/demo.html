@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+
+	<script src="imageLoder.js"></script>
+	<script>
+		var imglist = ['./images/1.jpg','./images/4.jpg','./images/3.jpg'];
+		var fn = function(data){
+			console.log(data);
+		}
+		loadImage(imglist,function(data){
+			data ? console.log('全部加载成功') : console.log('加载失败');
+		});
+		
+		
+	</script>
+</body>
+</html>
