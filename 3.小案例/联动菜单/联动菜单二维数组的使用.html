@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" type="text/html" charset="utf-8"/>
+		<title>联动菜单:二维数组的使用</title>
+	</head>
+
+	<body onload="showProves()">
+		<select id="proves" onclick="showProves();showCities()">
+			<option>请选择</option>
+		</select>
+
+		<select id="cities"></select>
+		
+		<script>
+			function $(id){
+				return document.getElementById(id);
+			}
+			var proves = ["北京市","天津市"];
+			var cities = [
+					["朝阳区","海淀区","东城区"],
+					["南开区","和平区"]
+			];
+			var isProvShow = true;
+			
+			function showProves(){
+				if(isProvShow){
+					var prov = $("proves");
+					for(var i=0,len=proves.length;i<len;i++){
+						var op = document.createElement("option");
+						op.value = i;
+						op.innerHTML = proves[i];
+						prov.appendChild(op);
+					}
+					isProvShow = false;
+				}
+			}
+
+			function showCities(){
+				var index = $("proves").selectedIndex;
+				var b_city = $("cities");
+				while(b_city.childNodes.length > 0)
+				{
+					b_city.removeChild(b_city.lastChild);
+				}
+				if(index > 0){
+					var arry = getCitiesByProves(index -1);
+
+					for(var i=0,len=arry.length;i<len;i++){
+						var op = document.createElement("option");
+						op.value = i;
+						op.innerHTML = arry[i];
+						b_city.appendChild(op);
+					}
+				}	
+			}
+
+
+			function getCitiesByProves(index)
+			{
+				/*
+				var index;
+				for(var i=0,len=proves.length;i<len;i++){
+					if(prov = proves[i]){
+						index = i;
+						break;
+					}
+				}*/
+				if(index != undefined){
+					var arr = cities[index];
+					return arr;
+				}
+			}
+			
+
+
+
+		</script>
+	</body>
+</html>

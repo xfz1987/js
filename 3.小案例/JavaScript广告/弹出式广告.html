@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" type="text/html" charset="utf-8"/>
+		<title>广告弹出</title>
+		<style>
+			#ad{width:100px;height:100px;background:silver;position:fixed;bottom:-100px;right:0px;}
+			#ad span{line-height:100px;}
+			#ad b{cursor:pointer;border:1px solid black;display:block;width:10px;height:18px;float:right;}
+		</style>
+	</head>
+		
+	<body>
+		<div id="ad">
+			<span>弹出式广告</span>
+			<b onclick="down()">X</b>
+		</div>
+		<script>
+			var div = document.querySelector("#ad");
+			/*获得所有div的外部和内部样式（element.style.XXX只能获得内联样式）,IE不支持
+			  var cssStyle = document.defaultView.getComputedStyle(div,null);
+			  现在可简写为:getComputedStyle(div,null);
+			       IE:div.currentStyle;	
+			*/
+			if(document.documentElement.currentStyle){
+				var bottom = parseInt(div.currentStyle.bottom);
+			}else{
+				var bottom = parseInt(getComputedStyle(div,null).bottom);
+			}
+			function moveUp(){
+				if(bottom != 0){
+					bottom += 10;
+					div.style.bottom = bottom + "px";
+				}else{
+					clearInterval(timer);
+					timer = null;
+				}			
+			}
+			function moveDown(){
+				if(bottom != -100){
+					bottom -= 10;
+					div.style.bottom = bottom + "px";
+				}else{
+					clearInterval(timer);
+					timer = null;
+					setTimeout(function(){
+						timer = setInterval(moveUp,100);
+					},5000);
+				}			
+			}
+			function down(){
+				if(timer == null){
+					timer = setInterval(moveDown,100);
+				}
+			}
+
+			var timer = null;
+			window.onload = function(){
+				timer = setInterval(moveUp,100);
+			}
+
+		</script>
+
+	</body>
+</html>

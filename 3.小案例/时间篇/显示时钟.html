@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>时间显示</title>
+		<meta name="generator" content="editplus"/>
+		<meta http-equiv="content-type" type="text/html" charset="utf-8"/>
+		<script>
+			var timer;
+			function onShowTIme()
+			{
+				var time = new Date();
+				var year = time.getFullYear();
+				var month = time.getMonth() + 1;
+				var day = time.getDate();
+				var ary = new Array("星期日","星期一","星期二","星期三","星期四","星期五","星期六","星期日");
+				var xingqi = ary[time.getDay()];
+				var hour = time.getHours();
+				var minutes = time.getMinutes();
+				var seconds = time.getSeconds();
+				var dn = "AM"
+				if(hour > 12)
+				{
+					dn = "PM";
+					hour = hour - 12;
+				}
+				if(hour == 0)
+				{
+					hour = 12;
+				}
+				var my_time = year + " 年 " + month + " 月 " + day + "日 " +  xingqi + "  " + hour + "时" + minutes + "分" + seconds + "秒  " + dn;
+				var show = document.getElementById("time");
+				show.innerHTML = my_time;
+			}
+
+
+			function showTime()
+			{		
+				timer = window.setInterval(onShowTIme,1000);
+			}
+
+		</script>
+	</head>
+
+	<body bgcolor="#fef4d2" onload="showTime()">
+		<h1 align="center">时间显示</h1>
+		<hr size="1" color="red"/>
+		<label id="time" ></label>
+		
+
+	</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" type="text/html" charset="utf-8"/>
+		<title>遍历节点树——递归调用</title>
+	</head>
+
+	<body>
+		<ul>
+			<li>1</li>
+			<li>2</li>
+			<li>3</li>
+		</ul>
+		
+		<script>
+			var blank=[];
+			function getChildren(parent){
+				blank.push(" ");
+				for(var i=0,children=parent.childNodes,len=children.length;i<len;i++){		
+					if(children[i].nodeType == 1){
+						console.log(blank.join("") + children[i].nodeName);
+						getChildren(children[i]);
+					}				
+				}	
+				blank.pop(" ");
+			}
+			getChildren(document);
+		</script>
+	</body>
+</html>

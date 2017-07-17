@@ -1,0 +1,79 @@
+﻿<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<style>
+			li{
+				list-style:none;
+			}
+			li span{
+				padding-left: 20px;
+				cursor: pointer;
+			}
+			/*span两状态*/
+			.open{
+				background: url("img/minus.png") no-repeat center left;
+			}
+			.closed{
+				background: url("img/add.png") no-repeat center left;
+			}
+			/*sub ul两状态*/
+			.show{
+				display: block;
+			}
+			.hide{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<ul class="tree">
+			<li><span class="open" onclick="show(this)">考勤管理</span>
+				<ul class="show">
+					<li>日常考勤</li>
+					<li>请假申请</li>
+					<li>加班/出差</li>
+				</ul>
+			</li>
+			<li><span class="closed" onclick="show(this)">信息中心</span>
+				<ul class="hide">
+					<li>通知公告</li>
+					<li>公司新闻</li>
+					<li>规章制度</li>
+				</ul>
+			</li>
+			<li><span class="closed" onclick="show(this)">协同办公</span>
+				<ul class="hide">
+					<li>公文流转</li>
+					<li>文件中心</li>
+					<li>内部邮件</li>
+					<li>即时通信</li>
+					<li>短信提醒</li>
+				</ul>
+			</li>
+		</ul>
+
+		<script>
+			function show(obj){
+				var temp = obj.className;
+				for(var i=0,lis = document.querySelectorAll(".tree>li"),len=lis.length;i<len;i++){
+					lis[i].querySelector("span").className="closed";
+					lis[i].querySelector("ul").className = "hide";
+				}	
+				
+				if(temp == "open"){
+					obj.className = "closed";
+					//obj.parentNode.querySelector("ul").className = "hide";
+					//利用元素树得到兄弟元素(IE8不支持)
+					obj.nextElementSibling.className = "hide";
+				}else{
+					obj.className = "open";
+					//obj.parentNode.querySelector("ul").className = "show";
+					obj.nextElementSibling.className = "show";
+				}
+				
+				
+			}
+		</script>
+	</body>
+</html>

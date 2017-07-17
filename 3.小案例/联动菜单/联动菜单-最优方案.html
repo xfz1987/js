@@ -1,0 +1,62 @@
+﻿<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>示例4</title>
+		<script>
+			var data=[
+					{"id":10,"name":'男装',
+					 "sub":[{"id":101,"name":'正装'},
+							{"id":102,"name":'T恤'},
+							{"id":103,"name":'裤衩'}
+						   ]
+				    },
+					{"id":20,"name":'女装',
+		             "sub":[{"id":201,"name":'短裙'},
+			                {"id":202,"name":'连衣裙'},
+			                {"id":203,"name":'裤子',
+					         "sub":[{"id":2031,"name":'长裤'},
+						            {"id":2031,"name":'九分裤'},
+						            {"id":2031,"name":'七分裤'}
+						           ]
+			                }
+			               ]
+	               }
+           ];
+		</script>
+	</head>
+	<body>
+		<script>
+			var sel0 = document.createElement("select");
+			document.body.appendChild(sel0);
+			sel0.add(new Option("--请选择--",-1));
+			for(var i=0,len=data.length;i<len;i++){
+				sel0.add(new Option(data[i].name,data[i].id));
+			}
+			sel0.onchange = function(){changeSelect(data,event);};
+
+			//不确定层级，用递归
+			function addSub(parent){
+				if(parent&&parent.sub){
+					var sel = document.createElement("select");
+					document.body.appendChild(sel);
+					var subs = parent.sub;
+					sel.add(new Option("--请选择--",-1));
+					for(var i=0,len=subs.length;i<len;i++){
+						sel.add(new Option(subs[i].name,subs[i].id));
+					}
+					sel.onchange = function(){changeSelect(subs,event);};
+				}
+			}
+
+			function changeSelect(data,event){
+				event = window.event||event;
+				var target =event.target || event.srcElement;
+				while(document.body.lastChild != target){
+					document.body.removeChild(document.body.lastChild);
+				}
+				addSub(data[target.selectedIndex - 1]);
+			}
+		</script>
+	</body>
+</html>

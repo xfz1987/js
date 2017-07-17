@@ -1,0 +1,11 @@
+#form1
+{
+	border:1px solid black;
+	text-align:left;
+	width:300px;
+	background-color:yellow;
+}
+#form1 input
+{
+	background-color:gray;
+}

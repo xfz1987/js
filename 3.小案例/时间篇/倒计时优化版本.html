@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" type="text/html" charset="utf-8"/>
+		<title>倒计时优化版本</title>
+	
+	</head>
+		
+	<body onload="calc()">
+		<h1 id="clock"></h1>
+		<!--
+		<script>
+			var ms = 0;
+			function calc(){
+				var now = new Date(),
+					target = new Date();
+				target.setHours(17);
+				target.setMinutes(30);
+				target.setSeconds(0);
+				ms = target - now;
+			}
+
+			function timetir(){
+				ms -= 1000;
+				var h = Math.floor(ms/1000/60/60);
+				var m = Math.floor((ms - h*60*60*1000)/1000/60);
+				var s = Math.floor((ms - h*60*60*1000 - m*60*1000)/1000);
+				document.getElementById("clock").innerHTML = h + ":" + (m<10?"0"+m:m) + ":" + (s<10?"0"+s:s);
+				if(ms < 0){
+					clearInterval(interval);
+					interval = null;
+				}
+			}
+			
+			var interval = null;
+			interval = setInterval(timetir,1000);
+
+		</script>
+		-->
+		
+		<!--优化定时器-->
+		<script>
+			var ms = 0;
+			function calc(){
+				var now = new Date(),
+					target = new Date();
+				target.setHours(18);
+				target.setMinutes(30);
+				target.setSeconds(0);
+				ms = target - now;
+			}
+
+			function timetir(){
+				ms -= 1000;
+				var h = Math.floor(ms/1000/60/60);
+				var m = Math.floor((ms - h*60*60*1000)/1000/60);
+				var s = Math.floor((ms - h*60*60*1000 - m*60*1000)/1000);
+				document.getElementById("clock").innerHTML = h + ":" + (m<10?"0"+m:m) + ":" + (s<10?"0"+s:s);
+				if(ms>=0){
+					setTimeout(timetir,1000);
+				}
+			}
+			setTimeout(timetir,1000);
+			
+		</script>
+
+	</body>
+</html>

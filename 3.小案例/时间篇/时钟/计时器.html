@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    </head>
+    <body>
+        <input type="text" id="txt" value="00:00:00">
+        <input type="button" value="开始计时！" id="start" onClick="timedCount()">
+        <input type="button" value="停止计时！" style="display: none" id="end" onClick="stopCount()">
+        <input type="button" value="清除" onClick="clearAll()">
+
+        <script type="text/javascript">
+        var c=0,t;
+
+        function timedCount(){
+            var temptextmin=document.getElementById('txt');
+            hour = parseInt(c/3600);// 小时数
+            min = parseInt(c/60);// 分钟数
+            if(min>=60){
+                minmin=min%60
+            }
+            seconds = c%60;
+
+            temptextmin.value = (hour<10?"0"+hour:hour) + ":" + (min<10?"0"+min:min)  + ":" + (seconds<10?"0"+seconds:seconds);
+
+            c++;
+
+            t=setTimeout(timedCount,1000)
+
+            document.getElementById('start').style.display = "none";
+            document.getElementById('end').style.display = "";
+        }
+
+        function stopCount(){
+            clearTimeout(t)
+            document.getElementById('start').style.display = "";
+            document.getElementById('end').style.display = "none";
+        }
+        function clearAll(){
+            c=0
+            document.getElementById('txt').value = "00:00:00";
+            clearTimeout(t)
+            document.getElementById('start').style.display ="";
+            document.getElementById('end').style.display = "none";
+        }
+        </script>
+    </body>
+</html>

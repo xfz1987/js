@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" type="text/html" charset="utf-8"/>
+		<title>XXX</title>
+	</head>
+
+	<body onload="showTime()">
+		<h1 align="center">日期格式</h1>
+		<hr size="1" color="red"/>                                                                                                  <h3 id="d1"></h3>
+		<h3 id="d2"></h3>
+		<h3 id="d3"></h3>
+		<h3 id="d4"></h3>
+		<h3 id="d5"></h3>
+		
+		<script>
+			function showTime()
+			{
+				var time = new Date();
+				/*表示星期(英文) 月(英文) 日 年*/
+				document.getElementById("d1").innerHTML = time.toDateString();
+				/*表示时:分:秒 时区*/
+				document.getElementById("d2").innerHTML = time.toTimeString();
+				/*表示年/月/日*/
+				document.getElementById("d3").innerHTML = time.toLocaleDateString();
+				/*时:分:秒*/
+				document.getElementById("d4").innerHTML = time.toLocaleTimeString();
+				/*星期(英文),日 月(英文) 年 时:分:秒 时区*/
+				document.getElementById("d5").innerHTML = time.toUTCString();
+			}
+			
+		</script>                                                                                                                               
+	</body>
+</html>

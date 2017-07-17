@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" type="text/html" charset="utf-8"/>
+		<title>倒计时</title>
+	
+	</head>
+		
+	<body>
+		<h1 id="clock"></h1>
+		<button onclick="stop()">停止</button>
+		<script>
+			function stop(){
+				if(interval === null){
+					interval = setInterval(calc,1000);
+					document.querySelector("button").innerHTML = "停止"
+				}else{
+					clearInterval(interval);
+					interval = null;
+					document.querySelector("button").innerHTML = "启动"
+				}
+				
+			}
+			function calc(){
+				var now = new Date(),
+					target = new Date();
+				target.setHours(17);
+				target.setMinutes(30);
+				target.setSeconds(0);
+				if(now <= target){
+					var ms = target - now;
+					var h = Math.floor(ms/1000/60/60);
+					var m = Math.floor((ms - h*60*60*1000)/1000/60);
+					var s = Math.floor((ms - h*60*60*1000 - m*60*1000)/1000);
+					document.getElementById("clock").innerHTML = h + ":" + (m<10?"0"+m:m) + ":" + (s<10?"0"+s:s);
+				}else{
+					clearInterval(interval);
+					interval = null;
+				}		
+			}
+
+			var interval = null;
+			window.onload = function(){
+				calc();//解决延迟问题
+				interval = setInterval(calc,1000);
+			}
+
+		</script>
+	</body>
+</html>

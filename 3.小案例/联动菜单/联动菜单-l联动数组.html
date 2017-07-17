@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" type="text/html" charset="utf-8"/>
+		<title>联动菜单-l联动数组</title>
+	</head>
+
+	<body onload="showProves()">
+		<select id="proves" onclick="showProves();showCities()">
+			<option>请选择省份</option>
+		</select>
+
+		<select id="cities"></select>
+
+		<script>			
+			var cities = {
+					"北京市":["朝阳区","海淀区","东城区"],
+					"天津市":["南开区","和平区"]
+			};
+			var isShowProves = true;
+			function showProves(){		
+				var provNode = document.getElementById("proves");
+				var provs = getProves(cities);
+				if(isShowProves){
+					for(var i=0,len=provs.length;i<len;i++){
+						var op = document.createElement("option");
+						op.value = i;
+						op.innerHTML = provs[i];
+						provNode.appendChild(op);
+					}
+					isShowProves = false;
+				}
+			}
+
+			function showCities(){
+				var b_city = document.getElementById("cities");
+				while(b_city.childNodes.length > 0){
+					b_city.removeChild(b_city.lastChild);
+				}
+				var index = document.getElementById("proves").selectedIndex;
+				if(index > 0){
+					var provs = getProves(cities);
+					var arry = getCitiesByProves(provs[index-1])
+					for(var i=0,len=arry.length;i<len;i++){
+						var op = document.createElement("option");
+						op.value = i;
+						op.innerHTML = arry[i];
+						b_city.appendChild(op);
+					}
+				}
+			}
+
+			function getProves(cityList){
+				var provs = [];
+				for(var key in cityList){
+					provs.push(key);
+				}	
+				return provs;
+			}
+
+			function getCitiesByProves(prov){
+				return cities[prov];
+			}
+		
+
+		</script>
+	</body>
+</html>
