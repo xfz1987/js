@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button id="test">测试</button>
+    <script src="Concurrent.Thread-full-20080319.js"></script>
+    <script type="text/x-script.multithreaded-js">
+        document.getElementById('test').onclick = function(){
+            alert('射出来');
+        };
+
+        for(var i=0;i<100000;i++){
+               console.log(i);     
+        };
+    </script>	
+</body>
+</html>
