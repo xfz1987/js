@@ -1,0 +1,9 @@
+DOMReady实现策略
+ * 在页面的DOM树创建完成后（即HTML解析第一步完成）就触发
+   而无需等待其他资源的加载，即DOMReady实现策略
+ * 支持DOMContentLoaded事件的浏览器:
+   * 就使用DOMContentLoaded事件
+ 
+ * 不支持DOMContentLoaded事件的浏览器:
+   * 使用Hack兼容，
+     通过IE中的document.documentElement.doScroll('left')来判断DOM树是否创建完毕
