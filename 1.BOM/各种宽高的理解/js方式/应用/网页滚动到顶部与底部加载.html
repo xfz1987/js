@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>网页滚动到底部加载</title>
+</head>
+<body>
+	<div class="scrollDiv"></div>
+	<style>
+		.scrollDiv{
+			width:500px;height:400px;
+			margin:1000px auto 0;
+			background: red;
+		}
+	</style>
+	<script>
+		function scrollBottomOrTop(){
+			var clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+			var scrollTop =  document.documentElement.scrollTop || document.body.scrollTop;
+			var wholeHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+			if(clientHeight + scrollTop >= wholeHeight){
+				alert('已经到底部了');
+				//ajax进行下一页查询
+			}
+			if(scrollTop === 0){
+				alert('已经到顶部了');
+			}
+		}
+		window.onscroll = scrollBottomOrTop;
+	</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>可视区域加载</title>
+</head>
+<body>
+	<div id="showDiv"></div>
+	<style type="text/css">
+		#showDiv{
+			width:500px;
+			height:350px;
+			background:red;
+			margin:1000px auto 0;
+		}
+		.fadeInLeft{
+			-webkit-animation:fadeInLeft 2s;
+			animation:fadeInLeft 2s;
+		}
+		@-webkit-keyframes fadeInLeft{
+			0%{
+				opacity: 0;
+				-webkit-transform:translate(-100%,0);
+			}
+			100%{
+				opacity: 1;
+				-webkit-transform:none;
+			}
+		}
+		@keyframes fadeInLeft{
+			0%{
+				opacity: 0;
+				transform:translate(-100%,0);
+			}
+			100%{
+				opacity: 1;
+				transform:none;
+			}
+		}
+
+
+	</style>
+	<script src="./jquery.min.js"></script>
+	<script>
+		$(function(){
+			$(window).scroll(function(){
+				var clientHeight = $(window).height();
+				var scrollHeight = $(window).scrollTop();
+				var divTop = $('#showDiv').offset().top;
+				if(clientHeight + scrollHeight >= divTop){
+					$('#showDiv').addClass('fadeInLeft');
+				}
+
+			});
+
+
+		});
+	</script>
+</body>
+</html>

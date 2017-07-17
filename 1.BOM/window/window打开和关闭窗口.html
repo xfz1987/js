@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <input name="button" type="button" onClick="Wopen()" value="点击我，打开新窗口!" / ><br>
+    <script type="text/javascript">
+        function Wopen(){
+            //无菜单，无工具栏，无状态栏，有滚动条窗口
+            //top/left:距离窗口（Page）上/左部的距离,l
+            var win = window.open('http://www.baidu.com','_blank','width=300,height=200,menubar=no,toolbar=no,status=no,scrollbars=yes,top=100,left=100');
+            win.focus();
+            //win.close();
+        }
+    </script>
+</body>
+</html>

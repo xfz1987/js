@@ -1,0 +1,106 @@
+１.基本概念
+　　JavaScript是基于对象(object-based)的语言。这与Java不同,Java是面向对象的语言。
+    而基于对象的基本特征，就是采用事件驱动(event-driven)。它是在用图形界面的环境下，使得一切输入变化简单化。
+    通常鼠标或热键的动作我们称之为事件（Event），
+    而由鼠标或热键引发的一连串程序的动作，称之为事件驱动（Event Driver）。
+    而对事件进行处理程序或函数，我们称之为事件处理程序（Event Handler）。
+
+   事件流:事件流描述的是从页面中接收事件的顺序。
+
+  ①IE:事件冒泡流:事件在底层沿着DOM树往上依次执行（事件周期:目标触发 --> 事件冒泡）
+   html->head|body->div-btn
+   浏览器认为，点击了btn的同时，也点击了div，也点击了整个html,也点击了整个document
+   逐级冒泡，一直到document
+
+  ②Netscape:事件捕获流:不太具体的节点应该更早地收到事件，而最具体的节点应该最后收到事件，
+                         用于在事件到达预定目标之前捕获它,
+
+  IE和Netscape原理正好相反
+
+  ③DOM事件流
+    三个阶段:事件捕获阶段（事件在顶层沿着DOM树往下记录事件）
+             触发目标阶段
+	     事件冒泡阶段（事件在底层沿着DOM树往上依次执行）
+
+
+２.事件处理程序(也叫事件侦听器)
+   名字以"on"开头，
+
+   创建事件函数：
+   html:<元素 onType="do()"></元素>
+     js:a.element.onType = function(){};
+        b.使用事件绑定API,为元素添加事件处理程序
+	  onClick:事件处理函数名
+	    click:事件
+
+ 3.DOM2级事件处理程序
+  ①添加事件
+    var btn = document.getElementById("myBtn");
+    a  btn.addEventListener("click",function(){},false);
+	     最后一个参数，true:表示在捕获阶段调用事件处理程序
+			 false:表示在冒泡阶段调用事件处理程序
+
+
+    b  btn.addEventListener("click",function(){},false);
+       按钮有两个事件处理程序，则按照顺序执行，先 a 后 b
+
+  ②删除事件
+    用addEventListener 添加的事件，只能用removeEventListener来删除，
+    但是删除时,传入的参数与添加时的参数应该一致，才能删除
+
+    反例:
+      btn.removeEventListener("click",function(){},false);
+      //删除不了，看视参数都相同，但是第二个参数（匿名函数）不同(js中不可能有完全相同的匿名方法，长相一样，也不同)
+
+    优化:
+      var handler = funciton(){};
+      btn.addEventListener("click",handler,false);
+      btn.removeEventListener("click",handler,false);//可以删除掉
+
+
+ 5.IE事件处理程序
+   ①添加
+     var btn = document.getElementById("myBtn");
+     btn.attachEvent("onclick",function(){});
+     //IE8及更早版本支持冒泡事件，没有捕获阶段，所以添加的事件都会被添加到冒泡阶段
+
+     注意:a.第一个参数 "onclick";DOM中的addEventListener()
+          b.作用域:（非常重要）
+	           DOM:function()，函数作用域
+	           IE: function(),全局作用域，this -> window
+          c.事件运行顺序:
+	           DOM:顺序执行
+		   IE: 以相反的顺序执行
+
+   ②删除
+     btn.deleteEvent("onclick",function(){});删不掉
+     //原理同DOM一样
+
+
+6.跨浏览器的事件处理程序
+  var EventUtil = {
+	addHandler : function(element, type, handler){
+		if(element.addEventListener){
+			element.addEventListener(type,handler,false);
+		}else(element.attachEvent){
+			element.attachEvent("on"+type,handler);
+		}else{
+			element["on"+type] = handler;
+		}
+	},
+	removeHandler = function(element, type, handler){
+		if(element.reomveEventListener){
+			element.reomveEventListener(type,handler,false);
+		}else(element.deleteEvent){
+			element.detachEvent("on"+type,handler);
+		}else{
+			element["on"+type] = null;
+		}
+	}
+  }
+
+  //使用
+    var btn = document.getElementById("myBtn");
+    var handler = function(){};
+    EventUtil.addHandler(btn,"click",handler);
+    EventUtil.removeHandler(btn,"click",handler);

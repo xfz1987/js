@@ -1,0 +1,12 @@
+解决刷新提示“不重新发送信息，则无法刷新网页”问题2008-04-19 13:51使用window.location.reload;
+刷新时，如果提交数据的动作，则会出现这么个讨厌的对话框！
+
+  使用window.location.reload;刷新时，如果提交数据的动作，则会出现这么个讨厌的对话框！
+
+解决此问题，应该这样写：
+window.location.href=window.location.href; 
+window.location.reload;
+同理，如果是刷新父窗口，应该这样写：
+window.opener.location.href=window.opener.location.href;
+window.location.reload;
+这种写法就不出现那讨厌的对话框啦！

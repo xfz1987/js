@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div style="height:3000px;width:100%"></div>
+	<script src="jquery.min.js"></script>
+	<script>
+		$(function(){
+			$(window).scroll(function(){
+				var clientHeight = $(window).height();
+				var wholeHeight = $(document).height();
+				var scrollTop = $(window).scrollTop();
+				if(clientHeight + scrollTop >= wholeHeight){
+					alert('到底部了');
+				}
+				if(scrollTop === 0){
+					alert('到顶部了');
+				}
+			});
+		});
+	</script>
+</body>
+</html>

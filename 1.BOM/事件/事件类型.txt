@@ -1,0 +1,118 @@
+[事件类型分类]
+ ①UI事件   :当用户与页面上的元素交互时触发 
+ ②焦点事件
+ ③鼠标事件
+ ④滚轮事件
+ ⑤文本事件
+ ⑥键盘事件
+ ⑦合成事件: 当为IME(输入法编辑器)输入文字时触发
+ ⑧变动事件: 当底层DOM结构发生变化是触发
+ ⑨变动名称事件（已废弃） : 当元素或属性名变动时触发
+ HTML5定义的一些事件
+
+
+1.UI事件
+  onload事件:放在body中，当页面完全加载后(图像、js文件、css文件)，触发window上的load事件
+  unload事件:这个事件在文档被完全卸载后触发，从一个页面切换到另一个页面，
+             常被用来清理引用，避免内存泄漏
+  resize事件:当浏览器窗口被调整到一个新高度或宽度时，触发
+  scroll事件:
+
+2.焦点事件
+  onfocus、onblur
+
+3.鼠标及滑轮事件
+  onmouseover、onmouseout
+  onmousedown、onmouseup
+  onclick、ondblclick
+
+  相对于事件源对象的坐标:(event.offsetX||event.layerX),(event.offsetY||event.layerY);
+  距离浏览器显示区原点的坐标(页面的显示区),不随滚动条滚动而变化:(event.x||event.clientX),(event.y||event.clientY)
+  页面原点坐标(body的左上角),与滚动条有关:event.pageX,event.pageY
+  
+  
+  ①鼠标事件的客户端坐标位置: 发生事件时鼠标指针在视口中的水平和垂直坐标
+    event.clientX, event.clientY
+
+  ②页面坐标位置: 发生事件时鼠标指针在页面中的水平和垂直坐标
+    event.PageX, event.PageY
+    IE8不支持事件上的页面坐标，不过通过鼠标坐标和滚动信息可以计算出来
+    
+    var div = document.getElementById("myDiv");
+    EventUtil.addHandler(div, "click", function(){
+	event = EventUtil.getEvent(event);
+	var pageX = event.pageX;
+	var pageY = event.pageY;
+	if(pageX === undefined){
+		pageX = event.clientX + (document.body.scrollLeft || document.documentElement.scrollLeft);
+	}
+	if(pageY === undefined){
+		pageY = event.clientY + (document.body.scrollTop || document.documentElement.scrollTop);
+	}
+        
+	return [pageX,pageY];
+    });
+
+  ③屏幕坐标位置：event.screenX, event.screenY
+    
+
+  ④修改键
+    shift、ctrl、alt、meta（windows中是windows键，在苹果机中是cmd键）
+
+    例:
+    var div = document.getElementById("myDiv");
+    EventUtil.addHandler("div","click",function(event){
+	event = EventUtil.getEvent(event);
+	var keys = new Array();
+	if(event.shiftkey){
+		keys.push("shift");
+	}
+	if(event.ctrlkey){
+		keys.push("ctrl");
+	}
+	if(event.altkey){
+		keys.push("alt");
+	}
+	if(event.shiftkey){
+		keys.push("meta");
+	}
+	console.log("Keys:" + keys.join(","));
+    });
+   
+   ⑤滑轮事件
+      //当用户向前滚动鼠标滑轮时，wheelDelta是120(滑一下的转度)的倍数，当向后滑动时，wheelDelta是 -120的倍数
+      var EventUtil = {
+	getWheelDelta : function(event){
+		if(event.wheelDelta){
+			return (client.engine.opera && client.engine.opera < 9.5 ? -event.wheelDelta : event.event.wheelDelta);
+		}else{
+			return -event.detail * 40;
+		}
+	}
+      };
+
+   
+   ⑥触摸设备
+
+
+4.键盘与文本事件
+  event.keydown:任意键，按住不放
+  event.keypress:字符键，按住不放
+  event.keyup:松开键
+
+  键码:event.keyCode ,例: 退格:8;
+   
+  var EventUtil = {
+	getCharCode : function(event){
+		if(typeof event.charCode == "number"){
+			return event.charCode;
+		}else{
+			return event.keyCode;
+		}
+	}
+  };
+
+  添加快捷键
+  element.accessKey="w"
+    
+ 

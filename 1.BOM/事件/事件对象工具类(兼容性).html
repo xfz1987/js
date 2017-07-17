@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" type="text/html" charset="utf-8"/>
+		<title>跨浏览器问题及解决办法</title>
+	</head>
+
+	<body>
+		<form>
+			<input type="text" id="text" value="请输入" autofocus/>
+			<input type="text" id="ping" value="屏蔽所有按键"/>
+			<button type="submit" name="aaa">提交</button>
+		</form>	
+		<form>
+			<input type="text" name="tel1" id="txtTel1" maxlength="3"/>
+			<input type="text" name="tel2" id="txtTel2" maxlength="3"/>
+			<input type="text" name="tel3" id="txtTel3" maxlength="4"/>
+		</form>
+		<div id="status" class="draggable" style="width:100px;height:100px;position:absolute;background:red;"></div>
+		
+		<!--事件跨浏览器-->	
+		<script>
+			var EventUtil = {
+				/*添加事件
+				addHandler : function(element, type, handler){
+					if(element.addEventListener){
+						element.addEventListener(type,handler,false);
+					}else if(element.attachEvent){
+						element.attachEvent("on"+type,handler);
+					}else{
+						element["on"+type] = handler;
+					}	
+				},*/
+
+				//添加n个事件，调用时"type1|type2|....|typeN"
+				addHandler : function(element, type, handler){
+					for(var i=0,arr=type.split("|"),len=arr.length;i<len;i++){
+						if(element.addEventListener){
+							element.addEventListener(arr[i],handler,false);
+						}else if(element.attachEvent){
+							element.attachEvent("on"+arr[i],handler);
+						}else{
+							element["on"+arr[i]] = handler;
+						}	
+					}
+				},
+				
+				//获得event对象
+				getEvent : function(event){
+					return window.event || event;
+				},
+				
+				//获得目标
+				getTarget : function(event){
+					return event.target || event.srcElement;
+				},
+
+				//取消事件的默认行为
+				preventDefault : function(event){
+					if(event.preventDefault){
+						event.preventDefault();
+					}else{
+						event.returnValue = false;
+					}
+				},
+
+				//移除事件
+				removeHandler : function(element, type, handler){
+					if(element.reomveEventListener){
+						element.reomveEventListener(type,handler,false);
+					}else if(element.deleteEvent){
+						element.detachEvent("on"+type,handler);
+					}else{
+						element["on"+type] = null;
+					}
+				},
+
+				//取消事件的进一步捕获或冒泡
+				stopPropagation : function(event){
+					if(event.stopPropagation){
+						event.stopPropagation();
+					}else{
+						event.cancelBubble = true;
+					}
+				},
+				
+				/*
+				  鼠标的相关事件
+				*/
+				//获取事件源(相对于事件源对象)坐标位置
+				getTargetXY : function(event){
+					return [(event.offsetX||event.layerX),(event.offsetY||event.layerY)]
+				}
+
+				//获取视口坐标位置（数组）
+				getViewXY : function(event){
+					return [(event.x||event.clientX),(event.y||event.clientY)];
+				},
+
+				//获取页面坐标位置（数组）
+				getPageXY : function(event){
+					var pageX = event.pageX;
+					var pageY = event.pageY;
+					pageX = pageX ===undefined ? (event.clientX + (document.body.scrollLeft ||
+													document.documentElement.scrollLeft)) : pageX;
+					pageY = pageY === undefined ? (event.clientY + (document.body.scrollTop || 
+													document.documentElement.scrollTop)) : pageY;    
+					return [pageX,pageY];
+				},
+
+				//获取屏幕坐标位置（数组）
+				getScreenXY : function(event){
+					return [event.screenX, event.screenY];
+				},
+				
+				//获取鼠标点击时同时按下那些修改键（数组）
+				getChangeKeyForMouse : function(event){
+					var keys = new Array();
+					if(event.shiftkey){
+						keys.push("shift");
+					}
+					if(event.ctrlkey){
+						keys.push("ctrl");
+					}
+					if(event.altkey){
+						keys.push("alt");
+					}
+					if(event.shiftkey){
+						keys.push("meta");
+					}
+					return keys;
+				},　
+
+				//滑轮事件
+				//当用户向前滚动鼠标滑轮时，wheelDelta是120(滑一下的转度)的倍数，当向后滑动时，wheelDelta是 -120的倍数
+				getWheelDelta : function(event){
+					if(event.wheelDelta){
+						return (client.engine.opera && client.engine.opera < 9.5 ? -event.wheelDelta : event.event.wheelDelta);
+					}else{
+						return -event.detail * 40;
+					}
+				},
+
+				//键盘与文本事件
+				getCharCode : function(event){
+					if(typeof event.charCode == "number"){
+						return event.charCode;
+					}else{
+						return event.keyCode;
+					}
+				},
+
+				//获得剪贴板的内容
+				getClipboardText : function(event){
+					var clipboardData = (event.clipboardData || window.clipboardData);
+					return clipboardData.getData("text");
+				},
+
+				//向剪贴板放置内容
+				setClipboardText : function(event,value){
+					if(event.clipboardData){
+						return event.clipboardData.setData("text/plain",value);
+					}else if(window.clipboardData){
+						return window.clipboardData.setData("text",value);
+					}else{
+						throw new Error("该浏览器不支持设置剪贴板功能!");
+					}
+				},
+								
+				//自动切换节点:
+                //常用方式:用户填写完当前字段后时，自动将焦点切换到下一个字段
+                //要求:在切换自动焦点之前，必须知道用户已经输入了既定长度的数据			
+				tabForward: function(event){
+					event = EventUtil.getEvent(event);
+					var target = EventUtil.getTarget(event);
+					if(target.value.length == target.maxLength){
+						var form = target.form;
+						for(var i=0,len=form.elements.length;i<len;i++){
+							if(form.elements[i] == target){
+								if(form.elements[i+1]){
+									form.elements[i+1].focus();
+								}
+								return;
+							}
+						}
+					}
+				}
+
+			};
+
+			//使用
+			var btn = document.getElementById("myBtn");
+			EventUtil.addHandler(btn,"click",function(event)){
+				event = EventUtil.getEvent(event);
+				var arr = EventUtil.getPageXY(event);
+			};
+
+		</script>
+		
+
+		<!--内置对象的跨浏览器-->
+		<script>
+			/*
+			  String类型
+			*/
+			//去空格（因为IE8不支持trim()方法,需重写）
+			String.prototype.trim = function (){
+					var reg = /(^\s+)|(\s+$)/g;
+					return this.replace(reg,"");
+			};
+			var str = " ab ";
+			//系统自动创建了new String(" ab ");
+			str = str.trim();
+
+
+			/*
+			  Array类型
+			*/
+			//查找数组中已有的元素,（因为IE8不支持indexOf()方法,需重写）
+			Array.prototype.indexOf = function(n){
+				for(var i=0,len=this.length;i<len;i++){
+					if(this[i] === n){
+						return i;
+					}
+				}
+				return -1;
+			}; 
+				
+			
+			/*
+			 Date类型	
+			*/
+			//时间格式转换
+			Date.prototype.format = function(){
+				var year = this.getFullYear();
+				var month = this.getMonth() + 1;
+				var day = this.getDate();
+				var ary = new Array("星期日","星期一","星期二","星期三","星期四","星期五","星期六","星期日");
+				var xingqi = ary[this.getDay()];
+				var hour = this.getHours();
+				var minutes = this.getMinutes();
+				var seconds = this.getSeconds();
+				var dn = "AM"
+				if(hour > 12){
+					dn = "PM";
+					hour = hour - 12;
+				}
+				if(hour == 0){
+					hour = 12;
+				}
+				return year + " 年 " + month + " 月 " + day + "日 " +  xingqi + "  " + hour + "时" + minutes + "分" + seconds + "秒  " + dn;		
+			}; 
+			var now = new Date();
+			console.log(now.format());
+
+		</script>
+		
+		<!--表单-->
+		<script>
+			//通过按钮提交的模式:在提交表单时，浏览器会在将请求发送给服务器之前触发submit事件，这样，我们就有机会验证表单数据
+			//取消这一事件的默认行为:
+			EventUtil.addHandler(form,"sumbit",function(event){
+				event = EventUtil.getEvent(event);
+				EventUtil.preventDefault(event);
+			});
+
+			//通过按钮重置的模式:在重置表单时，会触发reset事件，利用这个机会，在必要时取消重置操作。
+			EventUtil.addHandler(form,"reset",function(event){
+				event = EventUtil.getEvent(event);
+				EventUtil.preventDefault(event);
+			});
+
+
+			//防止重复提交表单
+			/*
+			<form>
+				姓名:<input type="text" id="text"/>
+				<button type="submit" onclick="cancelSubmit()">提交</button>
+			</form>
+			
+			js:
+				function cancelSubmit(){
+					var textValue = document.forms[0].elements[0].value;
+					alert(textValue);
+					document.forms[0].elements[1].disabled = true;
+				}
+
+				注意:不能用onclick事件处理程序来实现，因为不同浏览器存在"时差"，
+		        先出法click事件的浏览器:在提交之前就禁用了按钮，这样表单就永远无法提交了；
+			
+			*/
+		
+		   
+		    //优化:只适用表单中有提交按钮-->		
+			//获得表单
+			var form = document.forms[0];	
+			EventUtil.addHandler(form,"submit",function(event){
+				event = EventUtil.getEvent(event);
+				var target = EventUtil.getTarget(event);
+				//取得提交按钮
+				var btn = target.elements["aaa"];
+				//禁用
+				btn.disabled = true;
+			});	
+
+			//页面加载完毕，将焦点转移到表单的第一个字段
+			//做法:1.侦听load事件，并在该事件发生时，在表单的第一个字段调用focus()方法
+			//     2.HTML5:autofocus属性,只要设置了这个属性，不用js就能自动将焦点转移到相应字段
+			//       <input type="text" autofocus/>
+			EventUtil.addHandler(window,"load",function(event){
+				var element = forms[0].elements[0];
+				if(element.autofocus !== true){//在不支持autofocus的浏览器返回空字符串
+					element.focus();
+				}  
+			}); 
+			
+			//获得焦点
+			EventUtil.addHandler(document.forms[0].elements[0],"focus",function(event){
+				event = EventUtil.getEvent(event);
+				var target = EventUtil.getTarget(event);
+				target.style.background = "yellow";
+			});
+
+			//失去焦点
+			EventUtil.addHandler(document.forms[0].elements[0],"blur",function(event){
+				event = EventUtil.getEvent(event);
+				var target = EventUtil.getTarget(event);
+				target.style.background = "red";
+			});
+
+			//change事件（不同浏览器效果不一样:change先blur执行，）
+			EventUtil.addHandler(document.forms[0].elements[0],"change",function(event){
+				
+				event = EventUtil.getEvent(event);
+				var target = EventUtil.getTarget(event);
+				target.style.background = "blue";
+				target.style.color = "#fff";
+			});
+
+			//选择文本(获得焦点就选择文本，用于全部删除)
+			EventUtil.addHandler(document.forms[0].elements[0],"focus",function(event){
+				event = EventUtil.getEvent(event);
+				var target = EventUtil.getTarget(event);
+				target.select();
+			});
+
+			//屏蔽某一个输入框的所有按键
+			EventUtil.addHandler(document.forms[0].elements[1],"keypress",function(event){
+				event = EventUtil.getEvent(event);
+				EventUtil.preventDefault(event);
+			});
+
+			//让某一个输入框只能输入数字(不能同时按ctrl)
+			EventUtil.addHandler(document.forms[0].elements[0],"keypress",function(event){
+				event = EventUtil.getEvent(event);
+				var charCode = EventUtil.getCharCode(event);
+				if(!/\d/.test(String.fromCharCode(charCode)) && charCode > 9 && !event.ctrlKey){
+					EventUtil.preventDefault(event);
+				}		
+			});
+
+			//让某一个输入框不能粘贴非数字的字符
+			EventUtil.addHandler(document.forms[0].elements[0],"paste",function(event){
+				event = EventUtil.getEvent(event);
+				var text = EventUtil.getClipboardText(event);
+				if(!/^\d*$/.test(text)){
+					alert("不能粘贴非数字的字符！");
+					EventUtil.preventDefault(event);
+				}
+			});
+
+			//让某一个输入框禁止复制、剪切功能
+			EventUtil.addHandler(document.forms[0].elements[0],"copy|cut",function(event){
+				event = EventUtil.getEvent(event);
+				EventUtil.setClipboardText(event,"");
+				EventUtil.preventDefault(event);
+				
+			});
+
+			//自动切换焦点
+			EventUtil.addHandler(document.getElementById("txtTel1"), "keyup", EventUtil.tabForward);
+			EventUtil.addHandler(document.getElementById("txtTel2"), "keyup", EventUtil.tabForward);
+			EventUtil.addHandler(document.getElementById("txtTel3"), "keyup", EventUtil.tabForward);
+
+			//拖放
+			var DragDrop = function(){
+				var dragging = null,
+				    diffX = 0,
+					diffY = 0;
+				function handleEvent(event){
+					//获得事件和目标
+					event = EventUtil.getEvent(event);
+					var target = EventUtil.getTarget(event);
+					//确定事件类型
+					switch(event.type){
+						case "mousedown":
+							//判断是否是要拖动的对象
+							if(target.className.indexOf("draggable") > -1){
+								dragging = target;
+								diffX = event.clientX -target.offsetLeft;
+								diffY = event.clientY -target.offsetTop;
+							}
+							break;
+						case "mousemove":
+							if(dragging !== null){
+								//指定位置
+								dragging.style.left = (event.clientX - diffX) + "px";
+								dragging.style.top = (event.clientY - diffY) + "px";
+							}
+							break;
+						case "mouseup":
+							dragging = null;
+							break;
+					}
+				};
+			
+				//公共接口
+				return{
+					enable:function(){
+						EventUtil.addHandler(document,"mousedown",handleEvent);
+						EventUtil.addHandler(document,"mousemove",handleEvent);
+						EventUtil.addHandler(document,"mouseup",handleEvent);			
+					},
+					disable:function(){
+						EventUtil.addHandler(document,"mousedown",handleEvent);
+						EventUtil.addHandler(document,"mousemove",handleEvent);
+						EventUtil.addHandler(document,"mouseup",handleEvent);
+					}
+				}
+			}();
+			DragDrop.enable();
+			
+
+			/*需编写自定义事件类()
+			var DragDrop = function(EventTarget){
+				//var dragdrop = new EventTarget();
+				var dragdrop = new EventTarget();
+				var	dragging = null,
+				    diffX = 0,
+					diffY = 0;
+				function handleEvent(event){
+					//获得事件和目标
+					event = EventUtil.getEvent(event);
+					var target = EventUtil.getTarget(event);
+					//确定事件类型
+					switch(event.type){
+						case "mousedown":
+							//判断是否是要拖动的对象
+							if(target.className.indexOf("draggable") > -1){
+								dragging = target;
+								diffX = event.clientX -target.offsetLeft;
+								diffY = event.clientY -target.offsetTop;
+								//自定义事件
+								dragdrop.fire({type:"dragstart",
+											   target:dragging,
+											   x:event.clientX,
+											   y:event.clientY
+											 });
+							}
+							break;
+						case "mousemove":
+							if(dragging !== null){
+								//指定位置
+								dragging.style.left = (event.clientX - diffX) + "px";
+								dragging.style.top = (event.clientY - diffY) + "px";
+								//自定义事件
+								dragdrop.fire({type:"drag",
+											   target:dragging,
+											   x:event.clientX,
+											   y:event.clientY
+											 });
+							}
+							break;
+						case "mouseup":
+							//自定义事件
+							dragdrop.fire({type:"dragend",
+										   target:dragging,
+										   x:event.clientX,
+										   y:event.clientY
+										 });
+							dragging = null;
+							break;
+					}
+				};
+			
+				//公共接口
+				dragdrop.enable = function(){
+					EventUtil.addHandler(document,"mousedown",handleEvent);
+					EventUtil.addHandler(document,"mousemove",handleEvent);
+					EventUtil.addHandler(document,"mouseup",handleEvent);			
+				};
+				dragdrop.disable = function(){
+					EventUtil.addHandler(document,"mousedown",handleEvent);
+					EventUtil.addHandler(document,"mousemove",handleEvent);
+					EventUtil.addHandler(document,"mouseup",handleEvent);
+				};
+				
+				return dragdrop;
+			}();
+			
+			DragDrop.addHandler("dragstart",function(event){
+				var status = document.getElementById("status");
+				status.innerHTML = "Started draging" + event.target.id;
+			});
+			DragDrop.addHandler("drag",function(event){
+				var status = document.getElementById("status");
+				status.innerHTML = "动起来";
+			});
+			DragDrop.addHandler("dragend",function(event){
+				var status = document.getElementById("status");
+				status.innerHTML = "end draging";
+			});
+			*/
+
+		</script>
+
+
+
+		</script>
+	</body>
+</html>

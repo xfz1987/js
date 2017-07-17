@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>计算滚动轴的宽度</title>
+</head>
+<body>
+	<script>
+		function getScrollBar(){
+			var el = document.createElement('p'),
+                styles={width:'100px',height:'100px',overflowY:'scroll'},
+                i,scrollBarWidth;
+            for (i in styles) {
+            	el.style[i] = styles[i];
+            }
+            document.body.appendChild(el);
+            scrollBarWidth = el.offsetWidth - el.clientWidth;
+            el.remove();
+            return scrollBarWidth;
+		}
+
+		alert(getScrollBar());
+	</script>
+</body>
+</html>

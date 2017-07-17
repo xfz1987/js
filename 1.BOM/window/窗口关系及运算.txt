@@ -1,0 +1,49 @@
+1.frameset与body不能共存
+2.窗口位置
+  取得窗口左边和上边的位置(跨浏览器支持)
+  var leftPos = (typeof window.screenLeft == "number") ? window.screenLeft : window.screenX;
+  var topPos = (typeof window.screenTop == "number") ? window.screenTop : window.screenY;
+
+  //将窗口移动到屏幕左上角
+  window.moveTo(0,0);
+  //将窗口向下移动100像素
+  window.moveBy(0,100);
+  //将窗口移动到(200,300);
+  window.moveTo(200,300);
+  //将窗口左移50像素
+  window.moveBy(-50,0);
+
+3.导航和打开窗口
+  window.open("http://www.sina.com","topFrame","height=400,width=400,top=10,left=10,resizable=yes",true);
+  四个参数:url、窗口目标、特性字符串、新页面是否取代浏览器历史记录中当前加载页面的布尔值
+
+  第三个参数:
+  fullscreen yes/no  浏览器窗口是否最大化，仅限IE
+  height/width       新窗口高度/宽度，不能 < 100
+  left/top           新窗口左坐标/上坐标，不能是负值
+  location   yes/no  新窗口是否显示地址栏
+  menubar    yes/no  新窗口是否显示菜单栏
+  resizable  yes/no  是否可以通过拖动浏览器窗口的边框，改变其大小
+  scrollbars yes/no  滚动条
+  status     yes/no  状态栏
+  toolbar    yes/no  工具栏
+
+  检测弹出窗口屏蔽程序：
+  (弹出窗口被屏蔽:浏览器内置屏蔽、浏览器扩展或其它屏蔽程序)
+  var blocked = false;
+  try
+  {
+	var win = window.open("http://www.sina.com", "_blank");
+	if(win == null){
+		blocked = true;
+	}
+  }catch(ex){
+	blocked = true;
+  }
+  if(blocked){
+	alert("The popup was blocked!");
+  }
+
+
+
+

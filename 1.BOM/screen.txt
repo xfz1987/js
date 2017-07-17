@@ -1,0 +1,5 @@
+* screen对象用于获取用户的屏幕信息（以像素计）
+  screen.height 返回屏幕分辨率的高
+  screen.width 返回屏幕分辨率的宽
+  screen.availWidth 返回屏幕的宽度，减去界面特性，比如任务栏。
+  screen.availHeight 返回屏幕的高度，比如任务栏。
